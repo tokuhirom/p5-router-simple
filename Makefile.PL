@@ -2,7 +2,7 @@ use inc::Module::Install;
 name 'Router-Simple';
 all_from 'lib/Router/Simple.pm';
 
-# requires '';
+requires 'parent';
 
 
 readme_markdown_from 'lib/Router/Simple.pm';
