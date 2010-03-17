@@ -280,6 +280,8 @@ create new instance of Router::Simple.
 
 =item $router->connect([$name, ] $pattern, \%destination[, \%options])
 
+Add new rule for $router.
+
     $router->connect( '/', { controller => 'Root', action => 'index' } );
     $router->connect( 'show_entry', '/blog/:id',
         { controller => 'Blog', action => 'show' } );
@@ -331,14 +333,14 @@ This method makes the map as following:
 
 =item $router->url_for($anchor, \%opts)
 
+generate path string from rule named $anchor.
+
+You must pass the each parameters to \%opts.
+
     my $router = Router::Simple->new();
     $router->resource('Article', 'article');
     $router->url_for('articles'); # => /articles
     $router->url_for('edit_articles', {id => 3}); # => /articles/3/edit
-
-generate path string from rule named $anchor.
-
-You should pass the each parameters to \%opts.
 
 =item $router->as_string()
 
