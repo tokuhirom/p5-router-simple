@@ -165,6 +165,16 @@ Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF GMAIL COME<gt>
 
 =head1 SEE ALSO
 
+Router::Simple is inspired by L<routes.py|http://routes.groovie.org/>.
+
+L<Path::Dispatcher> is similar, but so complex.
+
+L<Path::Router> is heavy.It depend to L<Moose>.
+
+L<HTTP::Router> is heavy, too.It depend to Mouse, and more.
+
+L<HTTPx::Dispatcher> is my old one.It does not provides OOish interface.
+
 =head1 LICENSE
 
 Copyright (C) Tokuhiro Matsuno
