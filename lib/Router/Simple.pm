@@ -61,9 +61,10 @@ sub _zip {
 sub match {
     my ($self, $req) = @_;
 
-    my $path = $req->uri->path;
-    my $host = $req->uri->host;
+    my $path   = $req->uri->path;
+    my $host   = $req->uri->host;
     my $method = $req->method;
+
     for my $row (@{$self->{patterns}}) {
         if ($row->{host}) {
             unless ($host =~ $row->{host}) {
@@ -94,19 +95,58 @@ __END__
 
 =head1 NAME
 
-Router::Simple -
+Router::Simple - simple HTTP router
 
 =head1 SYNOPSIS
 
     use Router::Simple;
 
     my $router = Router::Simple->new();
-    $router->get('/', {controller => 'Root', action => 'show'});
-    $router->post('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'});
+    $router->connect('/', {controller => 'Root', action => 'show'});
+    $router->connect('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'});
 
 =head1 DESCRIPTION
 
-Router::Simple is
+Router::Simple is simple router class.
+
+=head1 METHODS
+
+=over 4
+
+=item my $router = Router::Simple->new();
+
+create new instance of Router::Simple.
+
+=item $router->connect($pattern, \%destination[, \%options])
+
+define the new route to $router.
+
+=over 4
+
+=item $pattern
+
+=item \%destionation
+
+=item \%options
+
+=back
+
+=item $router->match($req)
+
+Detect the routes for $req.
+
+$req is a L<HTTP::Request> like object.$req must respond to B<uri> and B<method>.
+Off course, you can use L<Plack::Request> as $req.
+
+This method returns a plain hashref.Example return value as following:
+
+    {
+        controller => 'Blog',
+        action     => 'daily',
+        args       => { year => 2010, month => '03', day => '04' },
+    }
+
+=back
 
 =head1 AUTHOR
 

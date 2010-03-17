@@ -30,3 +30,8 @@ kazeburo
 daisuke
 maki
 TODO
+URI
+HTTP
+URL
+uri
+EXPORTABLE

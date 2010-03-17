@@ -19,8 +19,26 @@ sub connect($$;$) { $ROUTER->connect(@_) }
 1;
 __END__
 
+=head1 NAME
+
+Router::Simple::Declare - declarative interface for Router::Simple
+
 =head1 SYNOPSIS
 
     my $router = router {
-        match '/{controller}/{action}/{id}';
+        connect '/{controller}/{action}/{id}';
     };
+
+=head1 DESCRIPTION
+
+Easy way to declare router object.
+
+=head1 USAGE
+
+look the SYNOPSIS.see L<Router::Simple> for more details.
+
+=head1 SEE ALSO
+
+L<Router::Simple>
+
+=cut
