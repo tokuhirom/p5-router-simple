@@ -61,9 +61,15 @@ sub _zip {
 sub match {
     my ($self, $req) = @_;
 
-    my $path   = $req->uri->path;
-    my $host   = $req->uri->host;
-    my $method = $req->method;
+    my ($path, $host, $method);
+    if ( not ref $req ) {
+        $path = $req;
+    }
+    else {
+        $path   = $req->uri->path;
+        $host   = $req->uri->host;
+        $method = $req->method;
+    }
 
     for my $row (@{$self->{patterns}}) {
         if ($row->{host}) {
@@ -131,12 +137,15 @@ define the new route to $router.
 
 =back
 
-=item $router->match($req)
+=item $router->match($req|$path)
 
-Detect the routes for $req.
+Match a URL against against one of the routes contained.
 
-$req is a L<HTTP::Request> like object.$req must respond to B<uri> and B<method>.
+$req is a L<HTTP::Request> like object or plain hashref.
+If $req is object, it must respond to B<uri> and B<method>.
 Off course, you can use L<Plack::Request> as $req.
+
+If you want to use Router::Simple for not HTTP routing such as FTP, you can pass $req as plain string.
 
 This method returns a plain hashref.Example return value as following:
 
@@ -145,6 +154,8 @@ This method returns a plain hashref.Example return value as following:
         action     => 'daily',
         args       => { year => 2010, month => '03', day => '04' },
     }
+
+Will return None if no valid match is found.
 
 =back
 
