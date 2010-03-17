@@ -30,12 +30,15 @@ define the new route to $router.
 
     - \%options
 
-- $router->match($req)
+- $router->match($req|$path)
 
-Detect the routes for $req.
+Match a URL against against one of the routes contained.
 
-$req is a [HTTP::Request](http://search.cpan.org/search?mode=module&query=HTTP::Request) like object.$req must respond to __uri__ and __method__.
+$req is a [HTTP::Request](http://search.cpan.org/search?mode=module&query=HTTP::Request) like object or plain hashref.
+If $req is object, it must respond to __uri__ and __method__.
 Off course, you can use [Plack::Request](http://search.cpan.org/search?mode=module&query=Plack::Request) as $req.
+
+If you want to use Router::Simple for not HTTP routing such as FTP, you can pass $req as plain string.
 
 This method returns a plain hashref.Example return value as following:
 
@@ -45,11 +48,27 @@ This method returns a plain hashref.Example return value as following:
         args       => { year => 2010, month => '03', day => '04' },
     }
 
+Will return None if no valid match is found.
+
 # AUTHOR
 
 Tokuhiro Matsuno <tokuhirom AAJKLFJEF GMAIL COM>
 
 # SEE ALSO
+
+Router::Simple is inspired by L<routes.py|http://routes.groovie.org/>.
+
+[Path::Dispatcher](http://search.cpan.org/search?mode=module&query=Path::Dispatcher) is similar, but so complex.
+
+[Path::Router](http://search.cpan.org/search?mode=module&query=Path::Router) is heavy.It depend to [Moose](http://search.cpan.org/search?mode=module&query=Moose).
+
+[HTTP::Router](http://search.cpan.org/search?mode=module&query=HTTP::Router) is heavy, too.It depend to Mouse, and more.
+
+[HTTPx::Dispatcher](http://search.cpan.org/search?mode=module&query=HTTPx::Dispatcher) is my old one.It does not provides OOish interface.
+
+# THANKS TO
+
+DeNA
 
 # LICENSE
 

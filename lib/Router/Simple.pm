@@ -10,8 +10,14 @@ sub new {
 }
 
 sub connect {
-    my ($self, $pattern, $res, $opt) = @_;
+    my $self = shift;
+    if (ref $_[1]) {
+        unshift(@_, undef);
+    }
+
+    my ($name, $pattern, $res, $opt) = @_;
     my $row = +{
+        name       => $name,
         controller => $res->{controller},
         action     => $res->{action},
     };
@@ -99,6 +105,108 @@ sub match {
         }
     }
     return undef; # not matched.
+}
+
+sub resource {
+    my ($self, $controller, $collection_name) = @_;
+
+    $self->connect(
+        $collection_name,
+        "/$collection_name",
+        {
+            controller => $controller,
+            action     => "create",
+        },
+        { method => ["POST"] }
+    );
+    $self->connect(
+        $collection_name,
+        "/$collection_name",
+        {
+            controller => $controller,
+            action     => "index",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "formatted_$collection_name",
+        "/$collection_name.{format}",
+        {
+            controller => $controller,
+            action     => "index",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "new_$collection_name",
+        "/$collection_name/new",
+        {
+            controller => $controller,
+            action     => "new",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "formatted_new_$collection_name",
+        "/$collection_name/new.{format}",
+        {
+            controller => $controller,
+            action     => "new",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "/$collection_name/{id}",
+        {
+            controller => $controller,
+            action     => "update",
+        },
+        { method => ["PUT"] }
+    );
+    $self->connect(
+        "/$collection_name/{id}",
+        {
+            controller => $controller,
+            action     => "delete",
+        },
+        { method => ["DELETE"] }
+    );
+    $self->connect(
+        "formatted_edit_$collection_name",
+        "/$collection_name/{id}.{format}/edit",
+        {
+            controller => $controller,
+            action     => "edit",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "edit_$collection_name",
+        "/$collection_name/{id}/edit",
+        {
+            controller => $controller,
+            action     => "edit",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "formatted_$collection_name",
+        "/$collection_name/{id}.{format}",
+        {
+            controller => $controller,
+            action     => "show",
+        },
+        { method => ["GET"] }
+    );
+    $self->connect(
+        "$collection_name",
+        "/$collection_name/{id}",
+        {
+            controller => $controller,
+            action     => "show",
+        },
+        { method => ["GET"] }
+    );
 }
 
 1;

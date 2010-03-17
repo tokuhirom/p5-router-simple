@@ -6,7 +6,7 @@ use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
 $r->connect('/' => {controller => 'Root', action => 'show'}, {method => 'GET', host => 'localhost'});
-$r->connect('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'});
+$r->connect('blog_monthly', '/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'});
 $r->connect('/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'});
 $r->connect('/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'});
 $r->connect('/', {controller => 'Root', 'action' => 'show_sub'}, {method => 'GET', host => 'sub.localhost'});
