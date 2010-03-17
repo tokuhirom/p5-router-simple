@@ -35,3 +35,6 @@ HTTP
 URL
 uri
 EXPORTABLE
+DeNA
+OOish
+py
