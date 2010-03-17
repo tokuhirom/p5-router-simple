@@ -4,7 +4,7 @@ use warnings;
 use parent 'Exporter';
 use Router::Simple;
 
-our @EXPORT = qw/router match/;
+our @EXPORT = qw/router connect/;
 
 our $ROUTER;
 
@@ -14,12 +14,12 @@ sub router (&) {
     $ROUTER;
 }
 
-sub match($$;$) { $ROUTER->connect(@_) }
+sub connect($$;$) { $ROUTER->connect(@_) }
 
 1;
 __END__
 
-=head1 SYNOPSS
+=head1 SYNOPSIS
 
     my $router = router {
         match '/{controller}/{action}/{id}';

@@ -30,7 +30,11 @@ sub connect {
         if (ref $pattern) {
             $pattern;
         } else {
-            $pattern =~ s!\{((?:\{[0-9,]+\}|[^{}]+)+)\}|:([A-Za-z0-9_]+)|([^{:]+)!
+            $pattern =~ s!
+                \{((?:\{[0-9,]+\}|[^{}]+)+)\} | # /blog/{year:\d{4}}
+                :([A-Za-z0-9_]+)              | # /blog/:year
+                ([^{:]+)                        # normal string
+            !
                 if ($1) {
                     my ($name, $pattern) = split /:/, $1;
                     push @capture, $name;
@@ -41,7 +45,7 @@ sub connect {
                 } else {
                     quotemeta($3)
                 }
-            !ge;
+            !gex;
             qr{^$pattern$};
         }
     };

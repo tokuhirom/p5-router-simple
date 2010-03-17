@@ -4,7 +4,11 @@ Router::Simple -
 
 # SYNOPSIS
 
-  use Router::Simple;
+    use Router::Simple;
+
+    my $router = Router::Simple->new();
+    $router->get('/', {controller => 'Root', action => 'show'});
+    $router->post('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'});
 
 # DESCRIPTION
 
