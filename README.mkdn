@@ -1,18 +1,49 @@
 # NAME
 
-Router::Simple -
+Router::Simple - simple HTTP router
 
 # SYNOPSIS
 
     use Router::Simple;
 
     my $router = Router::Simple->new();
-    $router->get('/', {controller => 'Root', action => 'show'});
-    $router->post('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'});
+    $router->connect('/', {controller => 'Root', action => 'show'});
+    $router->connect('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'});
 
 # DESCRIPTION
 
-Router::Simple is
+Router::Simple is simple router class.
+
+# METHODS
+
+- my $router = Router::Simple->new();
+
+create new instance of Router::Simple.
+
+- $router->connect($pattern, \%destination[, \%options])
+
+define the new route to $router.
+
+    - $pattern
+
+    - \%destionation
+
+    - \%options
+
+- $router->match($req)
+
+Detect the routes for $req.
+
+$req is a [HTTP::Request](http://search.cpan.org/search?mode=module&query=HTTP::Request) like object.$req must respond to __uri__ and __method__.
+Off course, you can use [Plack::Request](http://search.cpan.org/search?mode=module&query=Plack::Request) as $req.
+
+This method returns a plain hashref.Example return value as following:
+
+    {
+        controller => 'Blog',
+        action     => 'daily',
+        args       => { year => 2010, month => '03', day => '04' },
+    }
 
 # AUTHOR
 
