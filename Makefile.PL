@@ -3,7 +3,7 @@ name 'Router-Simple';
 all_from 'lib/Router/Simple.pm';
 
 requires 'parent';
-
+test_requires 'Test::Requires';
 
 readme_markdown_from 'lib/Router/Simple.pm';
 tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';

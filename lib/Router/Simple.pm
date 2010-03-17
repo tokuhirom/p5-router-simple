@@ -28,13 +28,13 @@ sub connect {
     $row->{pattern} = $pattern;
     $row->{regexp} = do {
         if (ref $pattern) {
-            $patern;
+            $pattern;
         } else {
-            $pattern =~ s!\{([^}]+)\}|:([A-Za-z0-9_]+)|([^{:]+)!
+            $pattern =~ s!\{((?:\{[0-9,]+\}|[^{}]+)+)\}|:([A-Za-z0-9_]+)|([^{:]+)!
                 if ($1) {
                     my ($name, $pattern) = split /:/, $1;
                     push @capture, $name;
-                    $pattern || "([^/]+)";
+                    $pattern ? "($pattern)" : "([^/]+)";
                 } elsif ($2) {
                     push @capture, $2;
                     "([^/]+)";
@@ -42,6 +42,7 @@ sub connect {
                     quotemeta($3)
                 }
             !ge;
+            qr{^$pattern$};
         }
     };
     $row->{capture} = \@capture;
@@ -56,7 +57,7 @@ sub _zip {
 sub match {
     my ($self, $req) = @_;
 
-    my $path = $req->path_info;
+    my $path = $req->uri->path;
     my $host = $req->uri->host;
     my $method = $req->method;
     for my $row (@{$self->{patterns}}) {
@@ -69,9 +70,9 @@ sub match {
             unless ($method =~ $row->{method}) {
                 next;
             }
-        {
+        }
         if (my @captured = ($path =~ $row->{regexp})) {
-            my %args = +{_zip($row->{capture}, \@captured)};
+            my %args = _zip($row->{capture}, \@captured);
             return +{
                 controller => $row->{controller} || delete $args{controller},
                 action     => $row->{action}     || delete $args{action},
