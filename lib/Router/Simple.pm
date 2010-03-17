@@ -91,7 +91,7 @@ sub match {
             };
         }
     }
-    return; # not matched.
+    return undef; # not matched.
 }
 
 1;
