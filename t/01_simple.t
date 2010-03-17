@@ -5,10 +5,11 @@ use Test::More;
 use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
-$r->connect('/' => {controller => 'Root', action => 'show'}, {method => 'GET'});
+$r->connect('/' => {controller => 'Root', action => 'show'}, {method => 'GET', host => 'localhost'});
 $r->connect('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'});
 $r->connect('/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'});
 $r->connect('/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'});
+$r->connect('/', {controller => 'Root', 'action' => 'show_sub'}, {method => 'GET', host => 'sub.localhost'});
 
 is_deeply(
     $r->match( HTTP::Request->new( GET => 'http://localhost/' ) ) || undef,
@@ -44,6 +45,14 @@ is_deeply(
     {
         controller => 'Comment',
         action     => 'create',
+        args       => {},
+    }
+);
+is_deeply(
+    $r->match( HTTP::Request->new( GET => 'http://sub.localhost/' ) ) || undef,
+    {
+        controller => 'Root',
+        action     => 'show_sub',
         args       => {},
     }
 );
