@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use 5.00800;
 our $VERSION = '0.01';
+use Router::Simple::SubMapper;
 
 sub new {
     bless {}, shift;
@@ -56,6 +57,12 @@ sub connect {
 sub _zip {
     my ($x, $y) = @_;
     map { $x->[$_], $y->[$_] } (0..@$x-1);
+}
+
+sub submapper {
+    my ($self, %args) = @_;
+    my $submapper = Router::Simple::SubMapper->new(parent => $self, %args);
+    return $submapper;
 }
 
 sub match {
@@ -174,6 +181,10 @@ L<Path::Router> is heavy.It depend to L<Moose>.
 L<HTTP::Router> is heavy, too.It depend to Mouse, and more.
 
 L<HTTPx::Dispatcher> is my old one.It does not provides OOish interface.
+
+=head1 THANKS TO
+
+DeNA
 
 =head1 LICENSE
 
