@@ -20,15 +20,15 @@ Router::Simple is simple router class.
 
 create new instance of Router::Simple.
 
-- $router->connect($pattern, \%destination[, \%options])
+- $router->connect([$name, ] $pattern, \%destination[, \%options])
+
+    $router->connect( '/', { controller => 'Root', action => 'index' } );
+    $router->connect( 'show_entry', '/blog/:id',
+        { controller => 'Blog', action => 'show' } );
+    $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
+    $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
 define the new route to $router.
-
-    - $pattern
-
-    - \%destionation
-
-    - \%options
 
 - $router->match($req|$path)
 
@@ -49,6 +49,50 @@ This method returns a plain hashref.Example return value as following:
     }
 
 Will return None if no valid match is found.
+
+- $router->resource($controller, $resource_name, \%opt)
+
+Router::Simple makes it easy to configure RESTful web services.
+__resource__ creates a set of add/modify/delete routes conforming to the Atom publishing protocol.
+
+This method makes the map as following:
+
+    $router->resource('Article', 'article', {collection_name => 'articles'})
+
+    articles                POST   /articles
+    articles                GET    /articles
+    formatted_articles      GET    /articles.{format}
+    new_articles            GET    /articles/new
+    formatted_new_articles  GET    /articles/new.{format}
+                            PUT    /articles/{id}
+                            DELETE /articles/{id}
+    formatted_edit_articles GET    /articles/{id}.{format}/edit
+    edit_articles           GET    /articles/{id}/edit
+    formatted_article       GET    /articles/{id}.{format}
+    article                 GET    /articles/{id}
+
+- $router->url_for($anchor, \%opts)
+
+    my $router = Router::Simple->new();
+    $router->resource('Article', 'article');
+    $router->url_for('articles'); # => /articles
+    $router->url_for('edit_articles', {id => 3}); # => /articles/3/edit
+
+generate path string from rule named $anchor.
+
+You should pass the each parameters to \%opts.
+
+- $router->as_string()
+
+Dump $router as string.
+
+The example output is following:
+
+    home         GET  /
+    blog_monthly GET  /blog/{year}/{month}
+                 GET  /blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}
+                 POST /comment
+                 GET  /
 
 # AUTHOR
 
