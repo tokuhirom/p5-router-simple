@@ -5,7 +5,7 @@ use Test::More;
 use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
-$r->connect('/' => {controller => 'Root', action => 'show'}, {method => 'GET', host => 'localhost'});
+$r->connect('home', '/' => {controller => 'Root', action => 'show'}, {method => 'GET', host => 'localhost'});
 $r->connect('blog_monthly', '/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'});
 $r->connect('/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'});
 $r->connect('/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'});
@@ -56,5 +56,12 @@ is_deeply(
         args       => {},
     }
 );
+
+is $r->url_for( 'home' ), '/';
+is $r->url_for( 'blog_monthly', { year => 2010, month => 3 } ),
+  '/blog/2010/3';
+is $r->url_for( 'blog_monthly', { year => 2010, month => 3, unknown => 1 } ),
+  undef;
+is $r->url_for( 'blog_monthly', {  } ), undef;
 
 done_testing;

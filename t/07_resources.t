@@ -5,7 +5,7 @@ use Test::More;
 use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
-$r->resource('Article', 'articles');
+$r->resource('Article', 'article');
 
 is_deeply(
     $r->match( HTTP::Request->new( POST => 'http://localhost/articles' ) ) || undef,
@@ -97,6 +97,18 @@ is_deeply(
         args       => {id => 4, format => 'rss'},
     }
 );
+
+# -------------------------------------------------------------------------
+
+diag($r->as_string());
+is $r->url_for( 'articles' ), '/articles', 'url_for';
+is $r->url_for( 'formatted_articles', {format => 'json'} ), '/articles.json';
+is $r->url_for( 'new_articles'), '/articles/new';
+is $r->url_for( 'formatted_new_articles', {format => 'json'}), '/articles/new.json';
+is $r->url_for( 'formatted_edit_articles', {id => 3, format => 'json'}), '/articles/3.json/edit';
+is $r->url_for( 'edit_articles', {id => 3}), '/articles/3/edit';
+is $r->url_for( 'formatted_article', {id => 3, format => 'json'}), '/articles/3.json', 'formatted_article';
+is $r->url_for( 'article', {id => 3} ), '/articles/3', 'url_for';
 
 done_testing;
 

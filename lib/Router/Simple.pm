@@ -4,6 +4,7 @@ use warnings;
 use 5.00800;
 our $VERSION = '0.01';
 use Router::Simple::SubMapper;
+use List::Util qw/max/;
 
 sub new {
     bless {}, shift;
@@ -23,10 +24,11 @@ sub connect {
     };
     if (my $method = $opt->{method}) {
         my $t = ref $method;
+        $row->{method} = $t ? $method : [$method];
         if ($t && $t eq 'ARRAY') {
             $method = join '|', @{$method};
         }
-        $row->{method} = qr{^(?:$method)$};
+        $row->{method_re} = qr{^(?:$method)$};
     }
     if (my $host = $opt->{host}) {
         $row->{host} = ref $host ? $host : qr(^\Q$host\E$);
@@ -90,8 +92,8 @@ sub match {
                 next;
             }
         }
-        if ($row->{method}) {
-            unless ($method =~ $row->{method}) {
+        if ($row->{method_re}) {
+            unless ($method =~ $row->{method_re}) {
                 next;
             }
         }
@@ -108,7 +110,14 @@ sub match {
 }
 
 sub resource {
-    my ($self, $controller, $collection_name) = @_;
+    my ($self, $controller, $resource_name, $opt) = @_;
+
+    my $collection_name = (
+        delete $opt->{collection_name} || do {
+            require Lingua::EN::Inflect;
+            Lingua::EN::Inflect::PL($resource_name);
+          }
+    );
 
     $self->connect(
         $collection_name,
@@ -190,7 +199,7 @@ sub resource {
         { method => ["GET"] }
     );
     $self->connect(
-        "formatted_$collection_name",
+        "formatted_$resource_name",
         "/$collection_name/{id}.{format}",
         {
             controller => $controller,
@@ -199,7 +208,7 @@ sub resource {
         { method => ["GET"] }
     );
     $self->connect(
-        "$collection_name",
+        "$resource_name",
         "/$collection_name/{id}",
         {
             controller => $controller,
@@ -207,6 +216,36 @@ sub resource {
         },
         { method => ["GET"] }
     );
+}
+
+sub url_for {
+    my ($self, $name, $opts) = @_;
+    LOOP:
+    for my $row (@{$self->{patterns}}) {
+        if ($row->{name} && $row->{name} eq $name) {
+            my %required = map { $_ => 1 } @{$row->{capture}};
+            my $path = $row->{pattern};
+            while (my ($k, $v) = each %$opts) {
+                delete $required{$k};
+                $path =~ s!\{$k(?:\:.+?)?\}|:$k!$v!g or next LOOP;
+            }
+            if (not %required) {
+                return $path;
+            }
+        }
+    }
+    return undef;
+}
+
+sub as_string {
+    my $self = shift;
+
+    my $mn = max(map { $_->{name} ? length($_->{name}) : 0 } @{$self->{patterns}});
+    my $nn = max(map { $_->{method} ? length(join(",",@{$_->{method}})) : 0 } @{$self->{patterns}});
+
+    return join('', map {
+        sprintf "%-${mn}s %-${nn}s %s\n", $_->{name}||'', join(',', @{$_->{method}}) || '', $_->{pattern}
+    } @{$self->{patterns}}) . "\n";
 }
 
 1;
