@@ -111,115 +111,6 @@ sub match {
     return undef; # not matched.
 }
 
-sub resource {
-    my ($self, $controller, $resource_name, $opt) = @_;
-
-    my $collection_name = (
-        delete $opt->{collection_name} || do {
-            require Lingua::EN::Inflect;
-            Lingua::EN::Inflect::PL($resource_name);
-        }
-    );
-
-    $self->connect(
-        $collection_name,
-        "/$collection_name",
-        {
-            controller => $controller,
-            action     => "create",
-        },
-        { method => ["POST"] }
-    );
-    $self->connect(
-        $collection_name,
-        "/$collection_name",
-        {
-            controller => $controller,
-            action     => "index",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "formatted_$collection_name",
-        "/$collection_name.{format}",
-        {
-            controller => $controller,
-            action     => "index",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "new_$collection_name",
-        "/$collection_name/new",
-        {
-            controller => $controller,
-            action     => "new",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "formatted_new_$collection_name",
-        "/$collection_name/new.{format}",
-        {
-            controller => $controller,
-            action     => "new",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "/$collection_name/{id}",
-        {
-            controller => $controller,
-            action     => "update",
-        },
-        { method => ["PUT"] }
-    );
-    $self->connect(
-        "/$collection_name/{id}",
-        {
-            controller => $controller,
-            action     => "delete",
-        },
-        { method => ["DELETE"] }
-    );
-    $self->connect(
-        "formatted_edit_$collection_name",
-        "/$collection_name/{id}.{format}/edit",
-        {
-            controller => $controller,
-            action     => "edit",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "edit_$collection_name",
-        "/$collection_name/{id}/edit",
-        {
-            controller => $controller,
-            action     => "edit",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "formatted_$resource_name",
-        "/$collection_name/{id}.{format}",
-        {
-            controller => $controller,
-            action     => "show",
-        },
-        { method => ["GET"] }
-    );
-    $self->connect(
-        "$resource_name",
-        "/$collection_name/{id}",
-        {
-            controller => $controller,
-            action     => "show",
-        },
-        { method => ["GET"] }
-    );
-}
-
 sub url_for {
     my ($self, $name, $opts) = @_;
 
@@ -312,27 +203,6 @@ This method returns a plain hashref.Example return value as following:
 
 Will return None if no valid match is found.
 
-=item $router->resource($controller, $resource_name, \%opt)
-
-Router::Simple makes it easy to configure RESTful web services.
-B<resource> creates a set of add/modify/delete routes conforming to the Atom publishing protocol.
-
-This method makes the map as following:
-
-    $router->resource('Article', 'article', {collection_name => 'articles'})
-
-    articles                POST   /articles
-    articles                GET    /articles
-    formatted_articles      GET    /articles.{format}
-    new_articles            GET    /articles/new
-    formatted_new_articles  GET    /articles/new.{format}
-                            PUT    /articles/{id}
-                            DELETE /articles/{id}
-    formatted_edit_articles GET    /articles/{id}.{format}/edit
-    edit_articles           GET    /articles/{id}/edit
-    formatted_article       GET    /articles/{id}.{format}
-    article                 GET    /articles/{id}
-
 =item $router->url_for($anchor, \%opts)
 
 generate path string from rule named $anchor.
@@ -340,7 +210,8 @@ generate path string from rule named $anchor.
 You must pass the each parameters to \%opts.
 
     my $router = Router::Simple->new();
-    $router->resource('Article', 'article');
+    $router->connect('articles', '/article', {controller => 'Article', action => 'index'});
+    $router->connect('edit_articles', '/article/{id}', {controller => 'Article', action => 'edit'});
     $router->url_for('articles'); # => /articles
     $router->url_for('edit_articles', {id => 3}); # => /articles/3/edit
 

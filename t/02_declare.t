@@ -12,8 +12,6 @@ my $r = router {
     submapper( path_prefix => '/account', controller => 'Account' )
       ->connect( '/login',  { action => 'login' } )
       ->connect( '/logout', { action => 'logout' } );
-
-    resource('Article', 'article', {collection_name => 'articles'});
 };
 
 is_deeply(
@@ -58,14 +56,6 @@ is_deeply(
     {
         controller => 'Account',
         action     => 'login',
-        args       => {},
-    }
-);
-is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/articles' ) ) || undef,
-    {
-        controller => 'Article',
-        action     => 'index',
         args       => {},
     }
 );

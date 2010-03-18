@@ -3,7 +3,6 @@ name 'Router-Simple';
 all_from 'lib/Router/Simple.pm';
 
 requires 'parent';
-requires 'Lingua::EN::Inflect';
 requires 'List::Util'; # was first released with perl 5.007003
 test_requires 'Test::Requires';
 

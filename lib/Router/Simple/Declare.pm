@@ -5,7 +5,7 @@ use parent 'Exporter';
 use Router::Simple;
 use Carp ();
 
-our @EXPORT = qw/router connect submapper resource/;
+our @EXPORT = qw/router connect submapper/;
 
 our $ROUTER;
 
@@ -17,7 +17,7 @@ sub router (&) {
 
 BEGIN {
     no strict 'refs';
-    for my $meth (qw/connect submapper resource/) {
+    for my $meth (qw/connect submapper/) {
         *{$meth} = sub {
             local $Carp::CarpLevel = $Carp::CarpLevel + 1;
             $ROUTER->$meth(@_);
@@ -40,8 +40,6 @@ Router::Simple::Declare - declarative interface for Router::Simple
         submapper(class => 'Account', path_prefix => '/account')
             ->connect('/login', {action => 'login'})
             ->connect('/logout', {action => 'logout'});
-
-        resource('Article', 'article', {collection_name => 'articles'});
     };
 
 =head1 DESCRIPTION

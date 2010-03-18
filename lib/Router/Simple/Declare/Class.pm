@@ -9,7 +9,7 @@ sub import {
 
     no strict 'refs';
     # functions
-    for my $meth (qw/connect submapper resource/) {
+    for my $meth (qw/connect submapper/) {
         *{"${pkg}::${meth}"} = sub {
             $router->$meth(@_);
         };
