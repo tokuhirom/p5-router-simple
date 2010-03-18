@@ -64,10 +64,7 @@ sub connect {
     push @{ $self->{patterns} }, $row;
 }
 
-sub _zip {
-    my ($x, $y) = @_;
-    map { $x->[$_], $y->[$_] } (0..@$x-1);
-}
+sub _zip { map { $_[0]->[$_], $_[1]->[$_] } (0..@{$_[0]}-1) }
 
 sub submapper {
     my ($self, %args) = @_;
