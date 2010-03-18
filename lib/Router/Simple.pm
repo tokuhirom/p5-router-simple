@@ -22,9 +22,13 @@ sub connect {
     Carp::croak("missing pattern") unless $pattern;
     my $row = +{
         name       => $name,
-        controller => $res->{controller},
-        action     => $res->{action},
     };
+    if (ref $res eq 'CODE') {
+        $row->{code} = $res;
+    } else {
+        $row->{controller} = $res->{controller};
+        $row->{action}    = $res->{action};
+    }
     if (my $method = $opt->{method}) {
         my $t = ref $method;
         if ($t && $t eq 'ARRAY') {
@@ -80,13 +84,17 @@ sub match {
     my ($self, $req) = @_;
 
     my ($path, $host, $method);
-    if ( not ref $req ) {
-        $path = $req; # allow plain string
-    }
-    else {
+    my $req_t = ref $req;
+    if ( $req_t eq 'HASH' ) {
+        $path   = $req->{PATH_INFO};
+        $host   = $req->{HTTP_HOST};
+        $method = $req->{REQUEST_METHOD};
+    } elsif ($req_t) {
         $path   = $req->uri->path;
         $host   = $req->uri->host;
         $method = $req->method;
+    } else {
+        $path = $req; # allow plain string
     }
 
     for my $row (@{$self->{patterns}}) {
@@ -102,11 +110,18 @@ sub match {
         }
         if (my @captured = ($path =~ $row->{regexp})) {
             my %args = _zip($row->{capture}, \@captured);
-            return +{
-                controller => $row->{controller} || delete $args{controller},
-                action     => $row->{action}     || delete $args{action},
-                args       => \%args,
-            };
+            if ($row->{code}) {
+                return +{
+                    code       => $row->{code},
+                    args       => \%args,
+                };
+            } else {
+                return +{
+                    controller => $row->{controller} || delete $args{controller},
+                    action     => $row->{action}     || delete $args{action},
+                    args       => \%args,
+                };
+            }
         }
     }
     return undef; # not matched.
