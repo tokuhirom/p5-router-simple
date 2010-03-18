@@ -9,8 +9,17 @@ $r->connect('/' => sub {
     'ok'
 });
 
-my $res = $r->match( HTTP::Request->new( GET => 'http://localhost/' ) );
-ok $res->{code};
+{
+    my $res = $r->match( HTTP::Request->new( GET => 'http://localhost/' ) );
+    ok $res->{code};
+}
+{
+    my $res = $r->match( +{
+        REQUEST_METHOD => 'GET',
+        PATH_INFO      => '/',
+    });
+    ok $res->{code}, 'psgi';
+}
 
 done_testing;
 
