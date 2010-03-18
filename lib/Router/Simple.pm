@@ -8,7 +8,7 @@ use List::Util qw/max/;
 use Carp ();
 
 sub new {
-    bless {}, shift;
+    bless {patterns => []}, shift;
 }
 
 sub connect {
@@ -27,7 +27,6 @@ sub connect {
     };
     if (my $method = $opt->{method}) {
         my $t = ref $method;
-        $row->{method} = $t ? $method : [$method];
         if ($t && $t eq 'ARRAY') {
             $method = join '|', @{$method};
         }
@@ -248,7 +247,7 @@ sub as_string {
     my $nn = max(map { $_->{method} ? length(join(",",@{$_->{method}})) : 0 } @{$self->{patterns}});
 
     return join('', map {
-        sprintf "%-${mn}s %-${nn}s %s\n", $_->{name}||'', join(',', @{$_->{method}}) || '', $_->{pattern}
+        sprintf "%-${mn}s %-${nn}s %s\n", $_->{name}||'', join(',', @{$_->{method} || []}) || '', $_->{pattern}
     } @{$self->{patterns}}) . "\n";
 }
 
