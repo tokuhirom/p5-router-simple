@@ -8,12 +8,19 @@ sub import {
     my $router = Router::Simple->new();
 
     no strict 'refs';
-    *{"$pkg\::connect"} = sub {
-        $router->connect(@_);
-    };
-    *{"$pkg\::match"} = sub {
-        my $self = shift; $router->match(@_)
-    };
+    # functions
+    for my $meth (qw/connect submapper resource/) {
+        *{"${pkg}::${meth}"} = sub {
+            $router->$meth(@_);
+        };
+    }
+    # class methods
+    for my $meth (qw/match as_string/) {
+        *{"$pkg\::${meth}"} = sub {
+            my $self = shift;
+            $router->$meth(@_)
+        };
+    }
 }
 
 1;
@@ -31,6 +38,9 @@ Router::Simple::Declare::Class - declare router as class
     connect '/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'};
     connect '/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'};
     connect '/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'};
+
+    submapper(path_prefix => '/account', class => 'Account')
+        ->connect('/{action}');
 
     package main;
 

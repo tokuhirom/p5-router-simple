@@ -12,6 +12,9 @@ use Test::Requires 'HTTP::Request';
     connect '/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'};
     connect '/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'};
 
+    submapper(path_prefix => '/account', controller => 'Account')
+        ->connect('/{action}');
+
 }
 
 is_deeply(
@@ -48,6 +51,23 @@ is_deeply(
     {
         controller => 'Comment',
         action     => 'create',
+        args       => {},
+    }
+);
+diag(MyDispatcher->as_string());
+is_deeply(
+    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/account/login' ) ) || undef,
+    {
+        controller => 'Account',
+        action     => 'login',
+        args       => {},
+    }
+);
+is_deeply(
+    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/account/logout' ) ) || undef,
+    {
+        controller => 'Account',
+        action     => 'logout',
         args       => {},
     }
 );

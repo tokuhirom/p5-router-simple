@@ -13,10 +13,12 @@ sub new {
 sub connect {
     my ($self, $pattern, $res, $opt) = @_;
     $pattern = $self->{path_prefix}.$pattern if $self->{path_prefix};
+    $res ||= +{};
+    $opt ||= +{};
     $self->{parent}->connect(
         $pattern,
         { controller => $self->{controller}, action => $self->{action}, %$res },
-        { method => $self->{method}, %{ $opt || {} } }
+        { method => $self->{method}, %$opt }
     );
     $self; # chained method
 }
