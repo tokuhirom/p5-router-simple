@@ -3,8 +3,9 @@ use strict;
 use warnings;
 use parent 'Exporter';
 use Router::Simple;
+use Carp ();
 
-our @EXPORT = qw/router connect/;
+our @EXPORT = qw/router connect submapper resource/;
 
 our $ROUTER;
 
@@ -14,7 +15,15 @@ sub router (&) {
     $ROUTER;
 }
 
-sub connect($$;$) { $ROUTER->connect(@_) }
+BEGIN {
+    no strict 'refs';
+    for my $meth (qw/connect submapper resource/) {
+        *{$meth} = sub {
+            local $Carp::CarpLevel = $Carp::CarpLevel + 1;
+            $ROUTER->$meth(@_);
+        };
+    }
+}
 
 1;
 __END__
@@ -27,6 +36,12 @@ Router::Simple::Declare - declarative interface for Router::Simple
 
     my $router = router {
         connect '/{controller}/{action}/{id}';
+
+        submapper(class => 'Account', path_prefix => '/account')
+            ->connect('/login', {action => 'login'})
+            ->connect('/logout', {action => 'logout'});
+
+        resource('Article', 'article', {collection_name => 'articles'});
     };
 
 =head1 DESCRIPTION

@@ -9,6 +9,11 @@ my $r = router {
     connect '/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'};
     connect '/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'};
     connect '/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'};
+    submapper( path_prefix => '/account', controller => 'Account' )
+      ->connect( '/login',  { action => 'login' } )
+      ->connect( '/logout', { action => 'logout' } );
+
+    resource('Article', 'article', {collection_name => 'articles'});
 };
 
 is_deeply(
@@ -45,6 +50,22 @@ is_deeply(
     {
         controller => 'Comment',
         action     => 'create',
+        args       => {},
+    }
+);
+is_deeply(
+    $r->match( HTTP::Request->new( POST => 'http://localhost/account/login' ) ) || undef,
+    {
+        controller => 'Account',
+        action     => 'login',
+        args       => {},
+    }
+);
+is_deeply(
+    $r->match( HTTP::Request->new( GET => 'http://localhost/articles' ) ) || undef,
+    {
+        controller => 'Article',
+        action     => 'index',
         args       => {},
     }
 );

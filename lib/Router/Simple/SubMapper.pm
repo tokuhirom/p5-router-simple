@@ -12,11 +12,23 @@ sub new {
 
 sub connect {
     my ($self, $pattern, $res, $opt) = @_;
+    $pattern = $self->{path_prefix}.$pattern if $self->{path_prefix};
     $self->{parent}->connect(
-        $self->{path_prefix} . $pattern,
+        $pattern,
         { controller => $self->{controller}, action => $self->{action}, %$res },
         { method => $self->{method}, %{ $opt || {} } }
     );
+    $self; # chained method
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Router::Simple::SubMapper
+
+=head1 DESCRIPTION
+
+Do not use this class directly.
+

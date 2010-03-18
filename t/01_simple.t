@@ -25,7 +25,8 @@ is_deeply(
         controller => 'Blog',
         action     => 'monthly',
         args       => {year => 2010, month => '03'},
-    }
+    },
+    'blog monthly'
 );
 is_deeply(
     $r->match( HTTP::Request->new( GET => 'http://localhost/blog/2010/03/04' ) ) || undef,

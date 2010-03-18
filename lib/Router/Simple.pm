@@ -5,6 +5,7 @@ use 5.00800;
 our $VERSION = '0.01';
 use Router::Simple::SubMapper;
 use List::Util qw/max/;
+use Carp ();
 
 sub new {
     bless {}, shift;
@@ -12,11 +13,13 @@ sub new {
 
 sub connect {
     my $self = shift;
-    if (ref $_[1]) {
+    # connect([$name, ]$pattern[, \%dest[, \%opt]])
+    if (@_ == 1 || ref $_[1]) {
         unshift(@_, undef);
     }
 
     my ($name, $pattern, $res, $opt) = @_;
+    Carp::croak("missing pattern") unless $pattern;
     my $row = +{
         name       => $name,
         controller => $res->{controller},
@@ -92,7 +95,7 @@ sub match {
                 next;
             }
         }
-        if ($row->{method_re}) {
+        if ($method && $row->{method_re}) {
             unless ($method =~ $row->{method_re}) {
                 next;
             }
@@ -116,7 +119,7 @@ sub resource {
         delete $opt->{collection_name} || do {
             require Lingua::EN::Inflect;
             Lingua::EN::Inflect::PL($resource_name);
-          }
+        }
     );
 
     $self->connect(
