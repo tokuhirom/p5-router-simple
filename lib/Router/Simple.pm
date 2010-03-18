@@ -67,8 +67,12 @@ sub connect {
 sub _zip { map { $_[0]->[$_], $_[1]->[$_] } (0..@{$_[0]}-1) }
 
 sub submapper {
-    my ($self, %args) = @_;
-    my $submapper = Router::Simple::SubMapper->new(parent => $self, %args);
+    my ($self, @args) = @_;
+
+    # ->submapper('/entry/, controller => 'Entry')
+    unshift @args, 'path_prefix' if @args%2==1;
+
+    my $submapper = Router::Simple::SubMapper->new(parent => $self, @args);
     return $submapper;
 }
 
