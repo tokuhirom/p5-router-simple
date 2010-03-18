@@ -77,7 +77,7 @@ sub match {
 
     my ($path, $host, $method);
     if ( not ref $req ) {
-        $path = $req;
+        $path = $req; # allow plain string
     }
     else {
         $path   = $req->uri->path;
