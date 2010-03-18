@@ -370,7 +370,7 @@ L<Path::Dispatcher> is similar, but so complex.
 
 L<Path::Router> is heavy.It depend to L<Moose>.
 
-L<HTTP::Router> is heavy, too.It depend to Mouse, and more.
+L<HTTP::Router> has many deps.It doesn't well documented.
 
 L<HTTPx::Dispatcher> is my old one.It does not provides OOish interface.
 
