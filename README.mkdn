@@ -52,27 +52,6 @@ This method returns a plain hashref.Example return value as following:
 
 Will return None if no valid match is found.
 
-- $router->resource($controller, $resource_name, \%opt)
-
-Router::Simple makes it easy to configure RESTful web services.
-__resource__ creates a set of add/modify/delete routes conforming to the Atom publishing protocol.
-
-This method makes the map as following:
-
-    $router->resource('Article', 'article', {collection_name => 'articles'})
-
-    articles                POST   /articles
-    articles                GET    /articles
-    formatted_articles      GET    /articles.{format}
-    new_articles            GET    /articles/new
-    formatted_new_articles  GET    /articles/new.{format}
-                            PUT    /articles/{id}
-                            DELETE /articles/{id}
-    formatted_edit_articles GET    /articles/{id}.{format}/edit
-    edit_articles           GET    /articles/{id}/edit
-    formatted_article       GET    /articles/{id}.{format}
-    article                 GET    /articles/{id}
-
 - $router->url_for($anchor, \%opts)
 
 generate path string from rule named $anchor.
@@ -80,7 +59,8 @@ generate path string from rule named $anchor.
 You must pass the each parameters to \%opts.
 
     my $router = Router::Simple->new();
-    $router->resource('Article', 'article');
+    $router->connect('articles', '/article', {controller => 'Article', action => 'index'});
+    $router->connect('edit_articles', '/article/{id}', {controller => 'Article', action => 'edit'});
     $router->url_for('articles'); # => /articles
     $router->url_for('edit_articles', {id => 3}); # => /articles/3/edit
 
@@ -108,7 +88,7 @@ Router::Simple is inspired by L<routes.py|http://routes.groovie.org/>.
 
 [Path::Router](http://search.cpan.org/search?mode=module&query=Path::Router) is heavy.It depend to [Moose](http://search.cpan.org/search?mode=module&query=Moose).
 
-[HTTP::Router](http://search.cpan.org/search?mode=module&query=HTTP::Router) is heavy, too.It depend to Mouse, and more.
+[HTTP::Router](http://search.cpan.org/search?mode=module&query=HTTP::Router) has many deps.It doesn't well documented.
 
 [HTTPx::Dispatcher](http://search.cpan.org/search?mode=module&query=HTTPx::Dispatcher) is my old one.It does not provides OOish interface.
 
