@@ -48,7 +48,8 @@ sub connect {
             $pattern =~ s!
                 \{((?:\{[0-9,]+\}|[^{}]+)+)\} | # /blog/{year:\d{4}}
                 :([A-Za-z0-9_]+)              | # /blog/:year
-                ([^{:]+)                        # normal string
+                (\*)                          | # /blog/*/*
+                ([^{:*]+)                       # normal string
             !
                 if ($1) {
                     my ($name, $pattern) = split /:/, $1;
@@ -57,8 +58,11 @@ sub connect {
                 } elsif ($2) {
                     push @capture, $2;
                     "([^/]+)";
+                } elsif ($3) {
+                    push @capture, '__splat__';
+                    "(.+)";
                 } else {
-                    quotemeta($3)
+                    quotemeta($4);
                 }
             !gex;
             qr{^$pattern$};
@@ -66,9 +70,8 @@ sub connect {
     };
     $row->{capture} = \@capture;
     push @{ $self->{patterns} }, $row;
+    return $self;
 }
-
-sub _zip { map { $_[0]->[$_], $_[1]->[$_] } (0..@{$_[0]}-1) }
 
 sub submapper {
     my ($self, @args) = @_;
@@ -109,17 +112,27 @@ sub match {
             }
         }
         if (my @captured = ($path =~ $row->{regexp})) {
-            my %args = _zip($row->{capture}, \@captured);
+            my %args;
+            my @splat;
+            for my $i (0..@{$row->{capture}}-1) {
+                if ($row->{capture}->[$i] eq '__splat__') {
+                    push @splat, $captured[$i];
+                } else {
+                    $args{$row->{capture}->[$i]} = $captured[$i];
+                }
+            }
             if ($row->{code}) {
                 return +{
                     code       => $row->{code},
                     args       => \%args,
+                    (@splat ? (splat => \@splat) : ()),
                 };
             } else {
                 return +{
                     controller => $row->{controller} || delete $args{controller},
                     action     => $row->{action}     || delete $args{action},
                     args       => \%args,
+                    (@splat ? (splat => \@splat) : ()),
                 };
             }
         }
