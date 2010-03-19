@@ -200,13 +200,13 @@ Router::Simple - simple HTTP router
 
 =head1 DESCRIPTION
 
-Router::Simple is simple router class.
+Router::Simple is a simple router class.
 
-The main purpose is dispatcher for web application.
+Its main purpose is to serve as a dispatcher for web applications.
 
 Router::Simple is L<PSGI> friendly.
 
-=head1 HOW TO WRITE ROUTING RULE
+=head1 HOW TO WRITE A ROUTING RULE
 
 =head2 plain string 
 
@@ -228,7 +228,7 @@ Router::Simple is L<PSGI> friendly.
     $router->match('/download/path/to/file.xml');
     # => {controller => 'Download', action => 'file', splat => ['path/to/file', 'xml'] }
 
-'*' notation matches qr{(.+)}.You will got captured arguments as 'splat'.
+'*' notation matches qr{(.+)}. You will get the captured argument 'splat'.
 
 =head2 '{year}' notation
 
@@ -238,7 +238,7 @@ Router::Simple is L<PSGI> friendly.
     # => {controller => 'Blog', action => 'yearly', args => { year => 2010 } }
 
 
-'{year}' notation matches qr{([^/]+)}, and it will capture to 'args'.
+'{year}' notation matches qr{([^/]+)}, and it will be captured as 'args'.
 
 =head2 '{year:[0-9]+}' notation
 
@@ -247,7 +247,7 @@ Router::Simple is L<PSGI> friendly.
     $router->match('/blog/2010/04');
     # => {controller => 'Blog', action => 'monthly', args => { year => 2010, month => '04' } }
 
-You can specify the regexp for named capture.
+You can specify regular expressions in named captures.
 
 =head2 regexp
 
@@ -264,11 +264,11 @@ You can use Perl5's powerful regexp directly.
 
 =item my $router = Router::Simple->new();
 
-create new instance of Router::Simple.
+Creates a new instance of Router::Simple.
 
 =item $router->connect([$name, ] $pattern, $destination[, \%options])
 
-Add new rule for $router.
+Adds a new rule to $router.
 
     $router->connect( '/', { controller => 'Root', action => 'index' } );
     $router->connect( 'show_entry', '/blog/:id',
@@ -276,13 +276,11 @@ Add new rule for $router.
     $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
     $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
-define the new route to $router.
+You can specify the $destination as \%hashref or \&coderef. The hashref should have keys named B<controller> and B<action>.
 
-You can specify the $destination as \%hashref or \&coderef.The coderef should have keys named B<controller> and B<action>.
-
-You can specify some optional things to \%options.Current version supports 'method' and 'host'.
-'method' is ArrayRef[String] or String, that matches B<REQUEST_METHOD> in $req.
-'host' is String or Regexp, that matches B<HTTP_HOST> in $req.
+You can specify some optional things to \%options. The current version supports 'method' and 'host'.
+'method' is an ArrayRef[String] or String that matches B<REQUEST_METHOD> in $req.
+'host' is a String or Regexp that matches B<HTTP_HOST> in $req.
 
 =item $router->submapper([$pathprefix, ] %args)
 
@@ -291,17 +289,17 @@ You can specify some optional things to \%options.Current version supports 'meth
 
 This method is shorthand for creating new instance of L<Router::Simple::Submapper>.
 
-The arguments will pass to Router::Simple::SubMapper->new(%args).
+The arguments will be passed to Router::Simple::SubMapper->new(%args).
 
 =item $router->match($req|$path)
 
-Match a URL against against one of the routes contained.
+Matches a URL against one of the contained routes.
 
-$req is a L<PSGI>'s $env or plain string.
+$req is a L<PSGI> $env or a plain string.
 
 This method returns a plain hashref.
 
-If you are using +{ controller => 'Blog', action => 'daily' } style, then you got return value as following:
+If you are using the +{ controller => 'Blog', action => 'daily' } style, then the value returned will look like:
 
     {
         controller => 'Blog',
@@ -309,20 +307,20 @@ If you are using +{ controller => 'Blog', action => 'daily' } style, then you go
         args       => { year => 2010, month => '03', day => '04' },
     }
 
-If you are using sub { ... } as action, you will get the following:
+If you are using a sub { ... } as the action, you will get the following:
 
     {
         code => sub { 'DUMMY' },
         args => { year => 2010, month => '03', day => '04' },
     }
 
-Will return undef if no valid match is found.
+This will return undef if no valid match is found.
 
 =item $router->url_for($anchor, \%opts)
 
-generate path string from rule named $anchor.
+Generate a path string from the rule named $anchor.
 
-You must pass the each parameters to \%opts.
+You must pass each parameter in \%opts.
 
     my $router = Router::Simple->new();
     $router->connect('articles', '/article', {controller => 'Article', action => 'index'});
@@ -332,9 +330,9 @@ You must pass the each parameters to \%opts.
 
 =item $router->as_string()
 
-Dump $router as string.
+Dumps $router as string.
 
-The example output is following:
+Example output:
 
     home         GET  /
     blog_monthly GET  /blog/{year}/{month}
@@ -360,11 +358,11 @@ Router::Simple is inspired by L<routes.py|http://routes.groovie.org/>.
 
 L<Path::Dispatcher> is similar, but so complex.
 
-L<Path::Router> is heavy.It depend to L<Moose>.
+L<Path::Router> is heavy. It depends on L<Moose>.
 
-L<HTTP::Router> has many deps.It doesn't well documented.
+L<HTTP::Router> has many deps. It is not well documented.
 
-L<HTTPx::Dispatcher> is my old one.It does not provides OOish interface.
+L<HTTPx::Dispatcher> is my old one. It does not provide an OOish interface.
 
 =head1 THANKS TO
 
