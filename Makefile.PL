@@ -5,7 +5,7 @@ all_from 'lib/Router/Simple.pm';
 requires 'parent';
 requires 'List::Util'; # was first released with perl 5.007003
 
-readme_markdown_from 'lib/Router/Simple.pm';
+readme_markdown_from('lib/Router/Simple.pm');
 tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';
 test_requires 'Test::More';
 test_requires 'YAML';
