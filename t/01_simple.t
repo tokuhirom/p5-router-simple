@@ -9,6 +9,7 @@ $r->connect('blog_monthly', '/blog/{year}/{month}', {controller => 'Blog', actio
 $r->connect('/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'});
 $r->connect('/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'});
 $r->connect('/', {controller => 'Root', 'action' => 'show_sub'}, {method => 'GET', host => 'sub.localhost'});
+$r->connect(qr{^/belongs/([a-z]+)/([a-z]+)$}, {controller => 'May', action => 'show'});
 
 is_deeply(
     $r->match( +{ REQUEST_METHOD => 'GET', PATH_INFO => '/', HTTP_HOST => 'localhost'} ),
@@ -56,6 +57,15 @@ is_deeply(
         args       => {},
     }
 );
+is_deeply(
+    $r->match( +{ PATH_INFO => '/belongs/to/us', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
+    {
+        controller => 'May',
+        action     => 'show',
+        args       => {},
+        splat      => ['to', 'us'],
+    }
+);
 
 is $r->url_for( 'home' ), '/';
 is $r->url_for( 'blog_monthly', { year => 2010, month => 3 } ),
@@ -63,5 +73,6 @@ is $r->url_for( 'blog_monthly', { year => 2010, month => 3 } ),
 is $r->url_for( 'blog_monthly', { year => 2010, month => 3, unknown => 1 } ),
   undef;
 is $r->url_for( 'blog_monthly', {  } ), undef;
+
 
 done_testing;

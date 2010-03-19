@@ -43,6 +43,7 @@ sub connect {
     $row->{pattern} = $pattern;
     $row->{regexp} = do {
         if (ref $pattern) {
+            $row->{regexp_capture} = 1;
             $pattern;
         } else {
             $pattern =~ s!
@@ -110,11 +111,15 @@ sub match {
         if (my @captured = ($path =~ $row->{regexp})) {
             my %args;
             my @splat;
-            for my $i (0..@{$row->{capture}}-1) {
-                if ($row->{capture}->[$i] eq '__splat__') {
-                    push @splat, $captured[$i];
-                } else {
-                    $args{$row->{capture}->[$i]} = $captured[$i];
+            if ($row->{regexp_capture}) {
+                push @splat, @captured;
+            } else {
+                for my $i (0..@{$row->{capture}}-1) {
+                    if ($row->{capture}->[$i] eq '__splat__') {
+                        push @splat, $captured[$i];
+                    } else {
+                        $args{$row->{capture}->[$i]} = $captured[$i];
+                    }
                 }
             }
             if ($row->{code}) {
@@ -200,6 +205,58 @@ Router::Simple is simple router class.
 The main purpose is dispatcher for web application.
 
 Router::Simple is L<PSGI> friendly.
+
+=head1 HOW TO WRITE ROUTING RULE
+
+=head2 plain string 
+
+    $router->connect( '/foo', { controller => 'Root', action => 'foo' } );
+
+=head2 :name notation
+
+    $router->connect( '/wiki/:page', { controller => 'WikiPage', action => 'show' } );
+    ...
+    $router->match('/wiki/john');
+    # => {controller => 'WikiPage', action => 'show', args => { page => 'john' } }
+
+':name' notation matches qr{([^/]+)}.
+
+=head2 '*' notation
+
+    $router->connect( '/download/*.*', { controller => 'Download', action => 'file' } );
+    ...
+    $router->match('/download/path/to/file.xml');
+    # => {controller => 'Download', action => 'file', splat => ['path/to/file', 'xml'] }
+
+'*' notation matches qr{(.+)}.You will got captured arguments as 'splat'.
+
+=head2 '{year}' notation
+
+    $router->connect( '/blog/{year}', { controller => 'Blog', action => 'yearly' } );
+    ...
+    $router->match('/blog/2010');
+    # => {controller => 'Blog', action => 'yearly', args => { year => 2010 } }
+
+
+'{year}' notation matches qr{([^/]+)}, and it will capture to 'args'.
+
+=head2 '{year:[0-9]+}' notation
+
+    $router->connect( '/blog/{year:[0-9]+}/{month:[0-9]{2}}', { controller => 'Blog', action => 'monthly' } );
+    ...
+    $router->match('/blog/2010/04');
+    # => {controller => 'Blog', action => 'monthly', args => { year => 2010, month => '04' } }
+
+You can specify the regexp for named capture.
+
+=head2 regexp
+
+    $router->connect( qr{/blog/(\d+)/([0-9]{2})', { controller => 'Blog', action => 'monthly' } );
+    ...
+    $router->match('/blog/2010/04');
+    # => {controller => 'Blog', action => 'monthly', splat => [2010, '04'] }
+
+You can use Perl5's powerful regexp directly.
 
 =head1 METHODS
 

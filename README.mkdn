@@ -27,6 +27,59 @@ The main purpose is dispatcher for web application.
 
 Router::Simple is [PSGI](http://search.cpan.org/search?mode=module&query=PSGI) friendly.
 
+# HOW TO WRITE ROUTING RULE
+
+## plain string 
+
+    $router->connect( '/foo', { controller => 'Root', action => 'foo' } );
+
+## :name notation
+
+    $router->connect( '/wiki/:page', { controller => 'WikiPage', action => 'show' } );
+    ...
+    $router->match('/wiki/john');
+    # => {controller => 'WikiPage', action => 'show', args => { page => 'john' } }
+
+':name' notation matches qr{([^/]+)}.
+
+## '*' notation
+
+    $router->connect( '/download/*.*', { controller => 'Download', action => 'file' } );
+    ...
+    $router->match('/download/path/to/file.xml');
+    # => {controller => 'Download', action => 'file', splat => ['path/to/file', 'xml'] }
+
+'*' notation matches qr{(.+)}.You will got captured arguments as 'splat'.
+
+## '{year}' notation
+
+    $router->connect( '/blog/{year}', { controller => 'Blog', action => 'yearly' } );
+    ...
+    $router->match('/blog/2010');
+    # => {controller => 'Blog', action => 'yearly', args => { year => 2010 } }
+
+
+
+'{year}' notation matches qr{([^/]+)}, and it will capture to 'args'.
+
+## '{year:[0-9]+}' notation
+
+    $router->connect( '/blog/{year:[0-9]+}/{month:[0-9]{2}}', { controller => 'Blog', action => 'monthly' } );
+    ...
+    $router->match('/blog/2010/04');
+    # => {controller => 'Blog', action => 'monthly', args => { year => 2010, month => '04' } }
+
+You can specify the regexp for named capture.
+
+## regexp
+
+    $router->connect( qr{/blog/(\d+)/([0-9]{2})', { controller => 'Blog', action => 'monthly' } );
+    ...
+    $router->match('/blog/2010/04');
+    # => {controller => 'Blog', action => 'monthly', splat => [2010, '04'] }
+
+You can use Perl5's powerful regexp directly.
+
 # METHODS
 
 - my $router = Router::Simple->new();
