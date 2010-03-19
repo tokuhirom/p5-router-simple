@@ -1,2 +1,4 @@
 Makefile
 inc/
+*.sw[pomn]
+MANIFEST
