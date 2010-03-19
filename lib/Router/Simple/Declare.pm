@@ -7,12 +7,12 @@ use Carp ();
 
 our @EXPORT = qw/router connect submapper/;
 
-our $ROUTER;
+our $_ROUTER;
 
 sub router (&) {
-    local $ROUTER = Router::Simple->new();
+    local $_ROUTER = Router::Simple->new();
     $_[0]->();
-    $ROUTER;
+    $_ROUTER;
 }
 
 BEGIN {
@@ -20,7 +20,7 @@ BEGIN {
     for my $meth (qw/connect submapper/) {
         *{$meth} = sub {
             local $Carp::CarpLevel = $Carp::CarpLevel + 1;
-            $ROUTER->$meth(@_);
+            $_ROUTER->$meth(@_);
         };
     }
 }
