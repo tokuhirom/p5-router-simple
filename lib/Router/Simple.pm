@@ -350,6 +350,8 @@ Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF GMAIL COME<gt>
 
 Tatsuhiko Miyagawa
 
+Shawn M Moore
+
 L<routes.py|http://routes.groovie.org/>.
 
 =head1 SEE ALSO
