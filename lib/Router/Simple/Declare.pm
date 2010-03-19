@@ -50,6 +50,18 @@ Easy way to declare router object.
 
 look the SYNOPSIS.see L<Router::Simple> for more details.
 
+=head1 FUNCTIONS
+
+=over 4
+
+=item router
+
+=item connect
+
+=item submapper
+
+=back
+
 =head1 SEE ALSO
 
 L<Router::Simple>

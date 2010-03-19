@@ -184,9 +184,22 @@ Router::Simple - simple HTTP router
     $router->connect('/', {controller => 'Root', action => 'show'});
     $router->connect('/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'});
 
+    my $app = sub {
+        my $env = shift;
+        if (my $p = $router->match($env)) {
+            return "MyApp::C::$p->{controller}"->can($p->{action})->($env, $p->{args});
+        } else {
+            [404, [], ['not found']];
+        }
+    };
+
 =head1 DESCRIPTION
 
 Router::Simple is simple router class.
+
+The main purpose is dispatcher for web application.
+
+Router::Simple is L<PSGI> friendly.
 
 =head1 METHODS
 
@@ -196,7 +209,7 @@ Router::Simple is simple router class.
 
 create new instance of Router::Simple.
 
-=item $router->connect([$name, ] $pattern, \%destination[, \%options])
+=item $router->connect([$name, ] $pattern, $destination[, \%options])
 
 Add new rule for $router.
 
@@ -208,13 +221,30 @@ Add new rule for $router.
 
 define the new route to $router.
 
+You can specify the $destination as \%hashref or \&coderef.The coderef should have keys named B<controller> and B<action>.
+
+You can specify some optional things to \%options.Current version supports 'method' and 'host'.
+'method' is ArrayRef[String] or String, that matches B<REQUEST_METHOD> in $req.
+'host' is String or Regexp, that matches B<HTTP_HOST> in $req.
+
+=item $router->submapper([$pathprefix, ] %args)
+
+    $router->submapper('/entry/, controller => 'Entry')
+    $router->submapper(path_prefix => '/entry/, controller => 'Entry')
+
+This method is shorthand for creating new instance of L<Router::Simple::Submapper>.
+
+The arguments will pass to Router::Simple::SubMapper->new(%args).
+
 =item $router->match($req|$path)
 
 Match a URL against against one of the routes contained.
 
 $req is a L<PSGI>'s $env or plain string.
 
-This method returns a plain hashref.Example return value as following:
+This method returns a plain hashref.
+
+If you are using +{ controller => 'Blog', action => 'daily' } style, then you got return value as following:
 
     {
         controller => 'Blog',
@@ -222,7 +252,14 @@ This method returns a plain hashref.Example return value as following:
         args       => { year => 2010, month => '03', day => '04' },
     }
 
-Will return None if no valid match is found.
+If you are using sub { ... } as action, you will get the following:
+
+    {
+        code => sub { 'DUMMY' },
+        args => { year => 2010, month => '03', day => '04' },
+    }
+
+Will return undef if no valid match is found.
 
 =item $router->url_for($anchor, \%opts)
 
@@ -253,6 +290,12 @@ The example output is following:
 =head1 AUTHOR
 
 Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF GMAIL COME<gt>
+
+=head1 THANKS TO
+
+Tatsuhiko Miyagawa
+
+L<routes.py|http://routes.groovie.org/>.
 
 =head1 SEE ALSO
 
