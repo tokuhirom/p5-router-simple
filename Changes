@@ -1,4 +1,8 @@
 Revision history for Perl extension Router::Simple
 
+0.02
+
+        - fixed english docs(Sartak++)
+
 0.01    Wed Mar 17 08:36:14 2010
         - original version

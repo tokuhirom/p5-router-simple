@@ -168,6 +168,8 @@ Tokuhiro Matsuno <tokuhirom AAJKLFJEF GMAIL COM>
 
 Tatsuhiko Miyagawa
 
+Shawn M Moore
+
 L<routes.py|http://routes.groovie.org/>.
 
 # SEE ALSO
