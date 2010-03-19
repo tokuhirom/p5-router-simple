@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Router::Simple;
 use Test::More;
-use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
 $r->submapper(path_prefix => '/account', controller => 'Account')
@@ -13,7 +12,7 @@ $r->submapper('/entry/{id:[0-9]+}', controller => 'Entry')
       ->connect('/edit', {action => 'edit'});
 
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/account/login' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/account/login', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Account',
         action     => 'login',
@@ -21,7 +20,7 @@ is_deeply(
     }
 );
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/entry/49/edit' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/entry/49/edit', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Entry',
         action     => 'edit',

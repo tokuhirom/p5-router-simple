@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Router::Simple;
 use Test::More;
-use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new()
             ->connect('/say/*/to/*' => {controller => 'Say', action => 'to'})

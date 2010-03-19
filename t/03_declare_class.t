@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Requires 'HTTP::Request';
 
 {
     package MyDispatcher;
@@ -18,7 +17,7 @@ use Test::Requires 'HTTP::Request';
 }
 
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Root',
         action     => 'show',
@@ -26,7 +25,7 @@ is_deeply(
     }
 );
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/blog/2010/03' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/blog/2010/03', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Blog',
         action     => 'monthly',
@@ -34,7 +33,7 @@ is_deeply(
     }
 );
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/blog/2010/03/04' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/blog/2010/03/04', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Blog',
         action     => 'daily',
@@ -43,11 +42,11 @@ is_deeply(
     'daily'
 );
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( POST => 'http://localhost/blog/2010/03' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/blog/2010/03', HTTP_HOST => 'localhost', REQUEST_METHOD => 'POST' } ) || undef,
     undef
 );
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( POST => 'http://localhost/comment' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/comment', HTTP_HOST => 'localhost', REQUEST_METHOD => 'POST' } ) || undef,
     {
         controller => 'Comment',
         action     => 'create',
@@ -56,7 +55,7 @@ is_deeply(
 );
 diag(MyDispatcher->as_string());
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/account/login' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/account/login', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Account',
         action     => 'login',
@@ -64,7 +63,7 @@ is_deeply(
     }
 );
 is_deeply(
-    MyDispatcher->match( HTTP::Request->new( GET => 'http://localhost/account/logout' ) ) || undef,
+    MyDispatcher->match( +{ PATH_INFO => '/account/logout', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Account',
         action     => 'logout',

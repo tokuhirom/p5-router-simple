@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Router::Simple;
 use Test::More;
-use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
 $r->connect('home', '/' => {controller => 'Root', action => 'show'}, {method => 'GET', host => 'localhost'});
@@ -12,7 +11,7 @@ $r->connect('/comment', {controller => 'Comment', 'action' => 'create'}, {method
 $r->connect('/', {controller => 'Root', 'action' => 'show_sub'}, {method => 'GET', host => 'sub.localhost'});
 
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/' ) ) || undef,
+    $r->match( +{ REQUEST_METHOD => 'GET', PATH_INFO => '/', HTTP_HOST => 'localhost'} ),
     {
         controller => 'Root',
         action     => 'show',
@@ -20,7 +19,7 @@ is_deeply(
     }
 );
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/blog/2010/03' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/blog/2010/03', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Blog',
         action     => 'monthly',
@@ -29,7 +28,7 @@ is_deeply(
     'blog monthly'
 );
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/blog/2010/03/04' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/blog/2010/03/04', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Blog',
         action     => 'daily',
@@ -38,11 +37,11 @@ is_deeply(
     'daily'
 );
 is_deeply(
-    $r->match( HTTP::Request->new( POST => 'http://localhost/blog/2010/03' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/blog/2010/03', HTTP_HOST => 'localhost', REQUEST_METHOD => 'POST' } ) || undef,
     undef
 );
 is_deeply(
-    $r->match( HTTP::Request->new( POST => 'http://localhost/comment' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/comment', HTTP_HOST => 'localhost', REQUEST_METHOD => 'POST' } ) || undef,
     {
         controller => 'Comment',
         action     => 'create',
@@ -50,7 +49,7 @@ is_deeply(
     }
 );
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://sub.localhost/' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/', HTTP_HOST => 'sub.localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Root',
         action     => 'show_sub',

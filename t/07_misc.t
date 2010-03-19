@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Router::Simple;
 use Test::More;
-use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
 $r->connect('/' => sub {
@@ -10,7 +9,13 @@ $r->connect('/' => sub {
 });
 
 {
-    my $res = $r->match( HTTP::Request->new( GET => 'http://localhost/' ) );
+    my $res = $r->match(
+        +{
+            REQUEST_METHOD => 'GET',
+            HTTP_HOST      => 'localhost',
+            'PATH_INFO'    => '/'
+        }
+    );
     ok $res->{code};
 }
 {

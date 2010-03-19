@@ -2,14 +2,13 @@ use strict;
 use warnings;
 use Router::Simple;
 use Test::More;
-use Test::Requires 'HTTP::Request';
 
 my $r = Router::Simple->new();
 $r->connect('/' => {controller => 'Root', action => 'show'});
 $r->connect('/p' => {controller => 'Root', action => 'p'});
 
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Root',
         action     => 'show',
@@ -18,7 +17,7 @@ is_deeply(
 );
 
 is_deeply(
-    $r->match( HTTP::Request->new( GET => 'http://localhost/p' ) ) || undef,
+    $r->match( +{ PATH_INFO => '/p', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Root',
         action     => 'p',

@@ -92,10 +92,6 @@ sub match {
         $path   = $req->{PATH_INFO};
         $host   = $req->{HTTP_HOST};
         $method = $req->{REQUEST_METHOD};
-    } elsif ($req_t) {
-        $path   = $req->uri->path;
-        $host   = $req->uri->host;
-        $method = $req->method;
     } else {
         $path = $req; # allow plain string
     }
@@ -216,11 +212,7 @@ define the new route to $router.
 
 Match a URL against against one of the routes contained.
 
-$req is a L<HTTP::Request> like object or plain hashref.
-If $req is object, it must respond to B<uri> and B<method>.
-Off course, you can use L<Plack::Request> as $req.
-
-If you want to use Router::Simple for not HTTP routing such as FTP, you can pass $req as plain string.
+$req is a L<PSGI>'s $env or plain string.
 
 This method returns a plain hashref.Example return value as following:
 
