@@ -184,7 +184,7 @@ Router::Simple - simple HTTP router
     my $app = sub {
         my $env = shift;
         if (my $p = $router->match($env)) {
-            return "MyApp::C::$p->{controller}"->can($p->{action})->($env, $p);
+            # $p = { controller => 'Blog', action => 'monthly', ... }
         } else {
             [404, [], ['not found']];
         }
@@ -196,7 +196,8 @@ Router::Simple is a simple router class.
 
 Its main purpose is to serve as a dispatcher for web applications.
 
-Router::Simple is L<PSGI> friendly.
+Router::Simple can match against PSGI C<$env> directly, which means
+it's easy to use with PSGI supporting web frameworks.
 
 =head1 HOW TO WRITE A ROUTING RULE
 
@@ -209,7 +210,7 @@ Router::Simple is L<PSGI> friendly.
     $router->connect( '/wiki/:page', { controller => 'WikiPage', action => 'show' } );
     ...
     $router->match('/wiki/john');
-    # => {controller => 'WikiPage', action => 'show', args => { page => 'john' } }
+    # => {controller => 'WikiPage', action => 'show', page => 'john' }
 
 ':name' notation matches qr{([^/]+)}.
 
@@ -220,24 +221,24 @@ Router::Simple is L<PSGI> friendly.
     $router->match('/download/path/to/file.xml');
     # => {controller => 'Download', action => 'file', splat => ['path/to/file', 'xml'] }
 
-'*' notation matches qr{(.+)}. You will get the captured argument 'splat'.
+'*' notation matches qr{(.+)}. You will get the captured argument as
+an array ref for the special key C<splat>.
 
 =head2 '{year}' notation
 
     $router->connect( '/blog/{year}', { controller => 'Blog', action => 'yearly' } );
     ...
     $router->match('/blog/2010');
-    # => {controller => 'Blog', action => 'yearly', args => { year => 2010 } }
+    # => {controller => 'Blog', action => 'yearly', year => 2010 }
 
-
-'{year}' notation matches qr{([^/]+)}, and it will be captured as 'args'.
+'{year}' notation matches qr{([^/]+)}, and it will be captured.
 
 =head2 '{year:[0-9]+}' notation
 
     $router->connect( '/blog/{year:[0-9]+}/{month:[0-9]{2}}', { controller => 'Blog', action => 'monthly' } );
     ...
     $router->match('/blog/2010/04');
-    # => {controller => 'Blog', action => 'monthly', args => { year => 2010, month => '04' } }
+    # => {controller => 'Blog', action => 'monthly', year => 2010, month => '04' }
 
 You can specify regular expressions in named captures.
 
@@ -248,7 +249,8 @@ You can specify regular expressions in named captures.
     $router->match('/blog/2010/04');
     # => {controller => 'Blog', action => 'monthly', splat => [2010, '04'] }
 
-You can use Perl5's powerful regexp directly.
+You can use Perl5's powerful regexp directly, and the captured values
+are stored in the special key C<splat>.
 
 =head1 METHODS
 
@@ -268,9 +270,10 @@ Adds a new rule to $router.
     $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
     $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
-\%destination will use by I<match> method.
+C<\%destination> will be used by I<match> method.
 
-You can specify some optional things to \%options. The current version supports 'method', 'host', and 'on_match'.
+You can specify some optional things to C<\%options>. The current
+version supports 'method', 'host', and 'on_match'.
 
 =over 4
 
@@ -286,37 +289,45 @@ You can specify some optional things to \%options. The current version supports 
 
     $r->connect(
         '/{controller}/{action}/{id}',
-        +{},
-        +{
+        {},
+        {
             on_match => sub {
-                my ($req, $match) = @_;
+                my($env, $match) = @_;
                 $match->{referer} = $req->{HTTP_REFERER};
                 return 1;
             }
         }
     );
 
-A function that evaluates the request. Its signature must be ($environ, $match_dict) => bool. It should return true if the match is successful or false otherwise. The first arg is $req; the second is the routing variables that would be returned if the match succeeds. The function can modify $match_dict in place to affect which variables are returned. This allows a wide range of transformations.
+A function that evaluates the request. Its signature must be C<<
+($environ, $match) => bool >>. It should return true if the match is
+successful or false otherwise. The first arg is C<$env> which is
+either a PSGI environment or a request path, depending on what you
+pass to C<match> method; the second is the routing variables that
+would be returned if the match succeeds.
+
+The function can modify C<$env> (in case it's a reference) and
+C<$match> in place to affect which variables are returned. This allows
+a wide range of transformations.
 
 =back
 
 =item $router->submapper($path, [\%dest, [\%opt]])
 
-    $router->submapper('/entry/, {controller => 'Entry'})
+    $router->submapper('/entry/', {controller => 'Entry'})
 
 This method is shorthand for creating new instance of L<Router::Simple::Submapper>.
 
-The arguments will be passed to Router::Simple::SubMapper->new(%args).
+The arguments will be passed to C<< Router::Simple::SubMapper->new(%args) >>.
 
-=item $router->match($req|$path)
+=item $match = $router->match($env|$path)
 
 Matches a URL against one of the contained routes.
 
-$req is a L<PSGI> $env or a plain string.
+The parameter is either a L<PSGI> $env or a plain string that
+represents a path.
 
-This method returns a plain hashref.
-
-If you are using the +{ controller => 'Blog', action => 'daily' } style, then the value returned will look like:
+This method returns a plain hashref that would look like:
 
     {
         controller => 'Blog',
@@ -324,13 +335,13 @@ If you are using the +{ controller => 'Blog', action => 'daily' } style, then th
         year => 2010, month => '03', day => '04',
     }
 
-This will return undef if no valid match is found.
+It returns undef if no valid match is found.
 
 =item $router->url_for($anchor, \%opts)
 
-Generate a path string from the rule named $anchor.
+Generates a path string from the rule named C<$anchor>.
 
-You must pass each parameter in \%opts.
+You must pass each parameter in C<\%opts>.
 
     my $router = Router::Simple->new();
     $router->connect('articles', '/article', {controller => 'Article', action => 'index'});

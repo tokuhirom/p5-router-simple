@@ -63,20 +63,22 @@ my ($hr, $rs);
 #arn Dumper($hr->match('/account/login'));
 #arn Dumper($rs->match('/account/login'));
 
-my $req = Plack::Request->new({
-    PATH_INFO => '/account/login'
-});
+my $req  = Plack::Request->new({ PATH_INFO => '/account/login' });
+my $req2 = Plack::Request->new({ PATH_INFO => '/date/2000' });
 
 cmpthese(
     -1, {
         'HTTP-Router' => sub {
             $hr->match('/account/login');
+            $hr->match('/date/2000');
         },
         'Router-Simple' => sub {
             $rs->match('/account/login');
+            $rs->match('/date/2000');
         },
         'HTTPx-Dispatcher' => sub {
             HD->match($req);
+            HD->match($req2);
         },
     }
 );
