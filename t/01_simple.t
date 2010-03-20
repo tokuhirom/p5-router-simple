@@ -64,12 +64,4 @@ is_deeply(
     }
 );
 
-is $r->url_for( 'home' ), '/';
-is $r->url_for( 'blog_monthly', { year => 2010, month => 3 } ),
-  '/blog/2010/3';
-is $r->url_for( 'blog_monthly', { year => 2010, month => 3, unknown => 1 } ),
-  undef;
-is $r->url_for( 'blog_monthly', {  } ), undef;
-
-
 done_testing;

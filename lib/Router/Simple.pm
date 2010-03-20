@@ -16,9 +16,6 @@ sub connect {
     my $self = shift;
     my $route = Router::Simple::Route->new(@_);
     push @{ $self->{routes} }, $route;
-    if (my $name = $route->name) {
-        $self->{by_name}->{$name} = $route;
-    }
     return $self;
 }
 
@@ -53,25 +50,6 @@ sub match {
 sub routematch {
     my ($self, $req) = @_;
     return $self->_match($req);
-}
-
-sub url_for {
-    my ($self, $name, $opts) = @_;
-
-    my $route = $self->{by_name}->{$name}
-        or return undef;
-
-    my %required = map { $_ => 1 } @{$route->{capture}};
-    my $path = $route->{pattern};
-    while (my ($k, $v) = each %$opts) {
-        delete $required{$k};
-        $path =~ s!\{$k(?:\:.+?)?\}|:$k!$v!g
-            or return undef;
-    }
-    if (not %required) {
-        return $path;
-    }
-    return undef;
 }
 
 sub as_string {
@@ -264,18 +242,6 @@ Match a URL against against one of the routes contained.
 
 Will return undef if no valid match is found, otherwise a
 result hashref and a L<Router::Simple::Route> object is returned.
-
-=item $router->url_for($anchor, \%opts)
-
-Generates a path string from the rule named C<$anchor>.
-
-You must pass each parameter in C<\%opts>.
-
-    my $router = Router::Simple->new();
-    $router->connect('articles', '/article', {controller => 'Article', action => 'index'});
-    $router->connect('edit_articles', '/article/{id}', {controller => 'Article', action => 'edit'});
-    $router->url_for('articles'); # => /articles
-    $router->url_for('edit_articles', {id => 3}); # => /articles/3/edit
 
 =item $router->as_string()
 
