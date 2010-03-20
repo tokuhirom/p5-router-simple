@@ -4,22 +4,24 @@ use warnings;
 use Scalar::Util qw/weaken/;
 
 sub new {
-    my $class = shift;
-    my $self = bless {@_}, $class;
+    my ($class, %args) = @_;
+    my $self = bless { %args }, $class;
     weaken($self->{parent});
     $self;
 }
 
 sub connect {
-    my ($self, $pattern, $res, $opt) = @_;
-    $pattern = $self->{path_prefix}.$pattern if $self->{path_prefix};
-    $res ||= +{};
+    my ($self, $pattern, $dest, $opt) = @_;
+    $pattern = $self->{pattern}.$pattern if $self->{pattern};
+    $dest ||= +{};
     $opt ||= +{};
+
     $self->{parent}->connect(
         $pattern,
-        { controller => $self->{controller}, action => $self->{action}, %$res },
-        { method => $self->{method}, host => $self->{host}, %$opt }
+        { %{ $self->{dest} }, %$dest },
+        { %{ $self->{opt} },  %$opt }
     );
+
     $self; # chained method
 }
 
@@ -51,20 +53,6 @@ This class provides shorthand to create routes, that have common parts.
 =item my $submapper = $router->submapper(%args);
 
 Do not call this method directly.You should create new instance from $router->submapper(%args).
-
-%args can take following keys:
-
-=over 4
-
-=item controller
-
-=item action
-
-=item method
-
-=item host
-
-=back
 
 =item $submapper->connect(@args)
 

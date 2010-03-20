@@ -16,7 +16,6 @@ is_deeply(
     {
         controller => 'Root',
         action     => 'show',
-        args       => {},
     }
 );
 is_deeply(
@@ -24,7 +23,8 @@ is_deeply(
     {
         controller => 'Blog',
         action     => 'monthly',
-        args       => {year => 2010, month => '03'},
+        year => 2010,
+        month => '03'
     },
     'blog monthly'
 );
@@ -33,7 +33,7 @@ is_deeply(
     {
         controller => 'Blog',
         action     => 'daily',
-        args       => {year => 2010, month => '03', day => '04'},
+        year => 2010, month => '03', day => '04',
     },
     'daily'
 );
@@ -46,7 +46,6 @@ is_deeply(
     {
         controller => 'Comment',
         action     => 'create',
-        args       => {},
     }
 );
 is_deeply(
@@ -54,7 +53,6 @@ is_deeply(
     {
         controller => 'Root',
         action     => 'show_sub',
-        args       => {},
     }
 );
 is_deeply(
@@ -62,7 +60,6 @@ is_deeply(
     {
         controller => 'May',
         action     => 'show',
-        args       => {},
         splat      => ['to', 'us'],
     }
 );

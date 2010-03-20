@@ -4,10 +4,10 @@ use Router::Simple;
 use Test::More;
 
 my $r = Router::Simple->new();
-$r->submapper(path_prefix => '/account', controller => 'Account')
+$r->submapper('/account', {controller => 'Account'})
       ->connect('/login', {action => 'login'})
       ->connect('/logout', {action => 'logout'});
-$r->submapper('/entry/{id:[0-9]+}', controller => 'Entry')
+$r->submapper('/entry/{id:[0-9]+}', {controller => 'Entry'})
       ->connect('/show', {action => 'show'})
       ->connect('/edit', {action => 'edit'});
 
@@ -16,7 +16,6 @@ is_deeply(
     {
         controller => 'Account',
         action     => 'login',
-        args       => {},
     }
 );
 is_deeply(
@@ -24,7 +23,7 @@ is_deeply(
     {
         controller => 'Entry',
         action     => 'edit',
-        args       => {id=>49},
+        id=>49,
     }
 );
 

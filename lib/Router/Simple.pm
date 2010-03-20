@@ -2,7 +2,7 @@ package Router::Simple;
 use strict;
 use warnings;
 use 5.00800;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 use Router::Simple::SubMapper;
 use List::Util qw/max/;
 use Carp ();
@@ -18,17 +18,13 @@ sub connect {
         unshift(@_, undef);
     }
 
-    my ($name, $pattern, $res, $opt) = @_;
+    my ($name, $pattern, $dest, $opt) = @_;
     Carp::croak("missing pattern") unless $pattern;
     my $row = +{
-        name       => $name,
+        name     => $name,
+        dest     => $dest,
+        on_match => $opt->{on_match},
     };
-    if (ref $res eq 'CODE') {
-        $row->{code} = $res;
-    } else {
-        $row->{controller} = $res->{controller};
-        $row->{action}    = $res->{action};
-    }
     if (my $method = $opt->{method}) {
         my $t = ref $method;
         if ($t && $t eq 'ARRAY') {
@@ -75,13 +71,13 @@ sub connect {
 }
 
 sub submapper {
-    my ($self, @args) = @_;
-
-    # ->submapper('/entry/, controller => 'Entry')
-    unshift @args, 'path_prefix' if @args%2==1;
-
-    my $submapper = Router::Simple::SubMapper->new(parent => $self, @args);
-    return $submapper;
+    my ($self, $pattern, $dest, $opt) = @_;
+    return Router::Simple::SubMapper->new(
+        parent  => $self,
+        pattern => $pattern,
+        dest    => $dest || +{},
+        opt     => $opt || +{},
+    );
 }
 
 sub match {
@@ -122,20 +118,16 @@ sub match {
                     }
                 }
             }
-            if ($row->{code}) {
-                return +{
-                    code       => $row->{code},
-                    args       => \%args,
-                    (@splat ? (splat => \@splat) : ()),
-                };
-            } else {
-                return +{
-                    controller => $row->{controller} || delete $args{controller},
-                    action     => $row->{action}     || delete $args{action},
-                    args       => \%args,
-                    (@splat ? (splat => \@splat) : ()),
-                };
+            my $match = +{
+                %{$row->{dest}},
+                %args,
+                ( @splat ? ( splat => \@splat ) : () ),
+            };
+            if ($row->{on_match}) {
+                my $ret = $row->{on_match}->($req, $match);
+                next unless $ret;
             }
+            return $match;
         }
     }
     return undef; # not matched.
@@ -192,7 +184,7 @@ Router::Simple - simple HTTP router
     my $app = sub {
         my $env = shift;
         if (my $p = $router->match($env)) {
-            return "MyApp::C::$p->{controller}"->can($p->{action})->($env, $p->{args});
+            return "MyApp::C::$p->{controller}"->can($p->{action})->($env, $p);
         } else {
             [404, [], ['not found']];
         }
@@ -266,7 +258,7 @@ You can use Perl5's powerful regexp directly.
 
 Creates a new instance of Router::Simple.
 
-=item $router->connect([$name, ] $pattern, $destination[, \%options])
+=item $router->connect([$name, ] $pattern, \%destination[, \%options])
 
 Adds a new rule to $router.
 
@@ -276,16 +268,41 @@ Adds a new rule to $router.
     $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
     $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
-You can specify the $destination as \%hashref or \&coderef. The hashref should have keys named B<controller> and B<action>.
+\%destination will use by I<match> method.
 
-You can specify some optional things to \%options. The current version supports 'method' and 'host'.
+You can specify some optional things to \%options. The current version supports 'method', 'host', and 'on_match'.
+
+=over 4
+
+=item method
+
 'method' is an ArrayRef[String] or String that matches B<REQUEST_METHOD> in $req.
+
+=item host
+
 'host' is a String or Regexp that matches B<HTTP_HOST> in $req.
 
-=item $router->submapper([$pathprefix, ] %args)
+=item on_match
 
-    $router->submapper('/entry/, controller => 'Entry')
-    $router->submapper(path_prefix => '/entry/, controller => 'Entry')
+    $r->connect(
+        '/{controller}/{action}/{id}',
+        +{},
+        +{
+            on_match => sub {
+                my ($req, $match) = @_;
+                $match->{referer} = $req->{HTTP_REFERER};
+                return 1;
+            }
+        }
+    );
+
+A function that evaluates the request. Its signature must be ($environ, $match_dict) => bool. It should return true if the match is successful or false otherwise. The first arg is $req; the second is the routing variables that would be returned if the match succeeds. The function can modify $match_dict in place to affect which variables are returned. This allows a wide range of transformations.
+
+=back
+
+=item $router->submapper($path, [\%dest, [\%opt]])
+
+    $router->submapper('/entry/, {controller => 'Entry'})
 
 This method is shorthand for creating new instance of L<Router::Simple::Submapper>.
 
@@ -304,14 +321,7 @@ If you are using the +{ controller => 'Blog', action => 'daily' } style, then th
     {
         controller => 'Blog',
         action     => 'daily',
-        args       => { year => 2010, month => '03', day => '04' },
-    }
-
-If you are using a sub { ... } as the action, you will get the following:
-
-    {
-        code => sub { 'DUMMY' },
-        args => { year => 2010, month => '03', day => '04' },
+        year => 2010, month => '03', day => '04',
     }
 
 This will return undef if no valid match is found.

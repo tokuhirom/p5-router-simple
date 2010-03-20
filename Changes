@@ -1,5 +1,13 @@
 Revision history for Perl extension Router::Simple
 
+0.03
+
+        [INCOMPATIBLE CHANGES]
+        - make 'submapper' as more consistent.
+        - ->match() returns flat hashref(suggested by miyagawa++)
+        - added 'on_match' callback function(suggested by miyagawa++)
+        - ->connect() does not treat any keys in $destination.
+
 0.02
 
         - fixed english docs(Sartak++)

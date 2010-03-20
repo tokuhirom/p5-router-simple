@@ -8,7 +8,7 @@ my $r = router {
     connect '/blog/{year}/{month}', {controller => 'Blog', action => 'monthly'}, {method => 'GET'};
     connect '/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blog', action => 'daily'}, {method => 'GET'};
     connect '/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'};
-    submapper( path_prefix => '/account', controller => 'Account' )
+    submapper( '/account', {controller => 'Account'} )
       ->connect( '/login',  { action => 'login' } )
       ->connect( '/logout', { action => 'logout' } );
 };
@@ -18,7 +18,6 @@ is_deeply(
     {
         controller => 'Root',
         action     => 'show',
-        args       => {},
     }
 );
 is_deeply(
@@ -26,7 +25,7 @@ is_deeply(
     {
         controller => 'Blog',
         action     => 'monthly',
-        args       => {year => 2010, month => '03'},
+        year => 2010, month => '03',
     }
 );
 is_deeply(
@@ -34,7 +33,7 @@ is_deeply(
     {
         controller => 'Blog',
         action     => 'daily',
-        args       => {year => 2010, month => '03', day => '04'},
+        year => 2010, month => '03', day => '04',
     },
     'daily'
 );
@@ -47,7 +46,6 @@ is_deeply(
     {
         controller => 'Comment',
         action     => 'create',
-        args       => {},
     }
 );
 is_deeply(
@@ -55,7 +53,6 @@ is_deeply(
     {
         controller => 'Account',
         action     => 'login',
-        args       => {},
     }
 );
 

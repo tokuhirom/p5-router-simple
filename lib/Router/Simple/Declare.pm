@@ -37,7 +37,7 @@ Router::Simple::Declare - declarative interface for Router::Simple
     my $router = router {
         connect '/{controller}/{action}/{id}';
 
-        submapper(class => 'Account', path_prefix => '/account')
+        submapper('/account', {class => 'Account'})
             ->connect('/login', {action => 'login'})
             ->connect('/logout', {action => 'logout'});
     };

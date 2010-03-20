@@ -12,7 +12,6 @@ is_deeply(
     {
         controller => 'Say',
         action     => 'to',
-        args       => {},
         splat      => [qw/foo bar/],
     }
 );
@@ -21,7 +20,6 @@ is_deeply(
     {
         controller => 'Download',
         action     => 'file',
-        args       => {},
         splat      => ['path/to/file', 'xml'],
     }
 );

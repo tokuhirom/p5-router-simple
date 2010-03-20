@@ -12,7 +12,6 @@ is_deeply(
     {
         controller => 'Root',
         action     => 'show',
-        args       => {},
     }
 );
 
@@ -21,7 +20,6 @@ is_deeply(
     {
         controller => 'Root',
         action     => 'p',
-        args       => {},
     }
 );
 

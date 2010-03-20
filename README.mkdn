@@ -13,7 +13,7 @@ Router::Simple - simple HTTP router
     my $app = sub {
         my $env = shift;
         if (my $p = $router->match($env)) {
-            return "MyApp::C::$p->{controller}"->can($p->{action})->($env, $p->{args});
+            return "MyApp::C::$p->{controller}"->can($p->{action})->($env, $p);
         } else {
             [404, [], ['not found']];
         }
@@ -86,7 +86,7 @@ You can use Perl5's powerful regexp directly.
 
 Creates a new instance of Router::Simple.
 
-- $router->connect([$name, ] $pattern, $destination[, \%options])
+- $router->connect([$name, ] $pattern, \%destination[, \%options])
 
 Adds a new rule to $router.
 
@@ -96,16 +96,37 @@ Adds a new rule to $router.
     $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
     $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
-You can specify the $destination as \%hashref or \&coderef. The hashref should have keys named __controller__ and __action__.
+\%destination will use by _match_ method.
 
-You can specify some optional things to \%options. The current version supports 'method' and 'host'.
-'method' is an ArrayRef[String] or String that matches __REQUEST_METHOD__ in $req.
-'host' is a String or Regexp that matches __HTTP_HOST__ in $req.
+You can specify some optional things to \%options. The current version supports 'method', 'host', and 'on_match'.
 
-- $router->submapper([$pathprefix, ] %args)
+    - method
 
-    $router->submapper('/entry/, controller => 'Entry')
-    $router->submapper(path_prefix => '/entry/, controller => 'Entry')
+    'method' is an ArrayRef[String] or String that matches __REQUEST_METHOD__ in $req.
+
+    - host
+
+    'host' is a String or Regexp that matches __HTTP_HOST__ in $req.
+
+    - on_match
+
+        $r->connect(
+            '/{controller}/{action}/{id}',
+            +{},
+            +{
+                on_match => sub {
+                    my ($req, $match) = @_;
+                    $match->{referer} = $req->{HTTP_REFERER};
+                    return 1;
+                }
+            }
+        );
+
+    A function that evaluates the request. Its signature must be ($environ, $match_dict) => bool. It should return true if the match is successful or false otherwise. The first arg is $req; the second is the routing variables that would be returned if the match succeeds. The function can modify $match_dict in place to affect which variables are returned. This allows a wide range of transformations.
+
+- $router->submapper($path, [\%dest, [\%opt]])
+
+    $router->submapper('/entry/, {controller => 'Entry'})
 
 This method is shorthand for creating new instance of [Router::Simple::Submapper](http://search.cpan.org/search?mode=module&query=Router::Simple::Submapper).
 
@@ -124,14 +145,7 @@ If you are using the +{ controller => 'Blog', action => 'daily' } style, then th
     {
         controller => 'Blog',
         action     => 'daily',
-        args       => { year => 2010, month => '03', day => '04' },
-    }
-
-If you are using a sub { ... } as the action, you will get the following:
-
-    {
-        code => sub { 'DUMMY' },
-        args => { year => 2010, month => '03', day => '04' },
+        year => 2010, month => '03', day => '04',
     }
 
 This will return undef if no valid match is found.
