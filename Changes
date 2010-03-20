@@ -1,5 +1,11 @@
 Revision history for Perl extension Router::Simple
 
+0.04
+
+        (no feature changes)
+        - some doc fixed(miyagawa++)
+        - added test case(miyagawa++)
+
 0.03
 
         [INCOMPATIBLE CHANGES]

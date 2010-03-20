@@ -2,7 +2,7 @@ package Router::Simple;
 use strict;
 use warnings;
 use 5.00800;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 use Router::Simple::SubMapper;
 use List::Util qw/max/;
 use Carp ();
