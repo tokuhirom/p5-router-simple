@@ -38,7 +38,7 @@ my ($hr, $rs);
             { controller => 'Date', action => 'by_year' };
 
         # path, params, and nesting
-        submapper(path_prefix => '/account', controller => 'Account')
+        submapper('/account', {controller => 'Account'})
             ->connect('/logout', {action => 'logout'})
             ->connect('/login',  {action => 'login'});
     };
