@@ -118,7 +118,7 @@ version supports 'method', 'host', and 'on_match'.
             {
                 on_match => sub {
                     my($env, $match) = @_;
-                    $match->{referer} = $req->{HTTP_REFERER};
+                    $match->{referer} = $env->{HTTP_REFERER};
                     return 1;
                 }
             }
