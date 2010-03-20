@@ -4,6 +4,7 @@ use warnings;
 use 5.00800;
 our $VERSION = '0.04';
 use Router::Simple::SubMapper;
+use Router::Simple::Route;
 use List::Util qw/max/;
 use Carp ();
 
@@ -13,60 +14,7 @@ sub new {
 
 sub connect {
     my $self = shift;
-    # connect([$name, ]$pattern[, \%dest[, \%opt]])
-    if (@_ == 1 || ref $_[1]) {
-        unshift(@_, undef);
-    }
-
-    my ($name, $pattern, $dest, $opt) = @_;
-    Carp::croak("missing pattern") unless $pattern;
-    my $row = +{
-        name     => $name,
-        dest     => $dest,
-        on_match => $opt->{on_match},
-    };
-    if (my $method = $opt->{method}) {
-        my $t = ref $method;
-        if ($t && $t eq 'ARRAY') {
-            $method = join '|', @{$method};
-        }
-        $row->{method_re} = qr{^(?:$method)$};
-    }
-    if (my $host = $opt->{host}) {
-        $row->{host} = ref $host ? $host : qr(^\Q$host\E$);
-    }
-    my @capture;
-    $row->{pattern} = $pattern;
-    $row->{regexp} = do {
-        if (ref $pattern) {
-            $row->{regexp_capture} = 1;
-            $pattern;
-        } else {
-            $pattern =~ s!
-                \{((?:\{[0-9,]+\}|[^{}]+)+)\} | # /blog/{year:\d{4}}
-                :([A-Za-z0-9_]+)              | # /blog/:year
-                (\*)                          | # /blog/*/*
-                ([^{:*]+)                       # normal string
-            !
-                if ($1) {
-                    my ($name, $pattern) = split /:/, $1;
-                    push @capture, $name;
-                    $pattern ? "($pattern)" : "([^/]+)";
-                } elsif ($2) {
-                    push @capture, $2;
-                    "([^/]+)";
-                } elsif ($3) {
-                    push @capture, '__splat__';
-                    "(.+)";
-                } else {
-                    quotemeta($4);
-                }
-            !gex;
-            qr{^$pattern$};
-        }
-    };
-    $row->{capture} = \@capture;
-    push @{ $self->{patterns} }, $row;
+    push @{ $self->{patterns} }, Router::Simple::Route->new(@_);
     return $self;
 }
 
@@ -80,7 +28,7 @@ sub submapper {
     );
 }
 
-sub match {
+sub _match {
     my ($self, $req) = @_;
 
     my ($path, $host, $method);
@@ -94,8 +42,8 @@ sub match {
     }
 
     for my $row (@{$self->{patterns}}) {
-        if ($row->{host}) {
-            unless ($host =~ $row->{host}) {
+        if ($row->{host_re}) {
+            unless ($host =~ $row->{host_re}) {
                 next;
             }
         }
@@ -104,10 +52,10 @@ sub match {
                 next;
             }
         }
-        if (my @captured = ($path =~ $row->{regexp})) {
+        if (my @captured = ($path =~ $row->{pattern_re})) {
             my %args;
             my @splat;
-            if ($row->{regexp_capture}) {
+            if ($row->{_regexp_capture}) {
                 push @splat, @captured;
             } else {
                 for my $i (0..@{$row->{capture}}-1) {
@@ -127,10 +75,21 @@ sub match {
                 my $ret = $row->{on_match}->($req, $match);
                 next unless $ret;
             }
-            return $match;
+            return ($match, $row);
         }
     }
     return undef; # not matched.
+}
+
+sub match {
+    my ($self, $req) = @_;
+    my ($match) = $self->_match($req);
+    return $match;
+}
+
+sub routematch {
+    my ($self, $req) = @_;
+    return $self->_match($req);
 }
 
 sub url_for {
@@ -336,6 +295,13 @@ This method returns a plain hashref that would look like:
     }
 
 It returns undef if no valid match is found.
+
+=item my ($match, $route) = $router->routematch($env|$path);
+
+Match a URL against against one of the routes contained.
+
+Will return undef if no valid match is found, otherwise a
+result hashref and a L<Router::Simple::Route> object is returned.
 
 =item $router->url_for($anchor, \%opts)
 
