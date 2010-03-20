@@ -37,7 +37,7 @@ Router::Simple::SubMapper - submapper
     use Router::Simple;
 
     my $router = Router::Simple->new();
-    my $s = $router->submapper('/entry/{id}', controller => 'Entry');
+    my $s = $router->submapper('/entry/{id}', {controller => 'Entry'});
     $s->connect('/edit' => {action => 'edit'})
       ->connect('/show' => {action => 'show'});
 
