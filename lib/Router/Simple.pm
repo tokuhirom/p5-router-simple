@@ -9,12 +9,12 @@ use List::Util qw/max/;
 use Carp ();
 
 sub new {
-    bless {patterns => []}, shift;
+    bless {routes => []}, shift;
 }
 
 sub connect {
     my $self = shift;
-    push @{ $self->{patterns} }, Router::Simple::Route->new(@_);
+    push @{ $self->{routes} }, Router::Simple::Route->new(@_);
     return $self;
 }
 
@@ -29,54 +29,13 @@ sub submapper {
 }
 
 sub _match {
-    my ($self, $req) = @_;
+    my ($self, $env) = @_;
 
-    my ($path, $host, $method);
-    my $req_t = ref $req;
-    if ( $req_t eq 'HASH' ) {
-        $path   = $req->{PATH_INFO};
-        $host   = $req->{HTTP_HOST};
-        $method = $req->{REQUEST_METHOD};
-    } else {
-        $path = $req; # allow plain string
-    }
+    $env = +{ PATH_INFO => $env } unless ref $env;
 
-    for my $row (@{$self->{patterns}}) {
-        if ($row->{host_re}) {
-            unless ($host =~ $row->{host_re}) {
-                next;
-            }
-        }
-        if ($method && $row->{method_re}) {
-            unless ($method =~ $row->{method_re}) {
-                next;
-            }
-        }
-        if (my @captured = ($path =~ $row->{pattern_re})) {
-            my %args;
-            my @splat;
-            if ($row->{_regexp_capture}) {
-                push @splat, @captured;
-            } else {
-                for my $i (0..@{$row->{capture}}-1) {
-                    if ($row->{capture}->[$i] eq '__splat__') {
-                        push @splat, $captured[$i];
-                    } else {
-                        $args{$row->{capture}->[$i]} = $captured[$i];
-                    }
-                }
-            }
-            my $match = +{
-                %{$row->{dest}},
-                %args,
-                ( @splat ? ( splat => \@splat ) : () ),
-            };
-            if ($row->{on_match}) {
-                my $ret = $row->{on_match}->($req, $match);
-                next unless $ret;
-            }
-            return ($match, $row);
-        }
+    for my $route (@{$self->{routes}}) {
+        my $match = $route->match($env);
+        return ($match, $route) if $match;
     }
     return undef; # not matched.
 }
@@ -96,7 +55,7 @@ sub url_for {
     my ($self, $name, $opts) = @_;
 
     LOOP:
-    for my $row (@{$self->{patterns}}) {
+    for my $row (@{$self->{routes}}) {
         if ($row->{name} && $row->{name} eq $name) {
             my %required = map { $_ => 1 } @{$row->{capture}};
             my $path = $row->{pattern};
@@ -115,12 +74,12 @@ sub url_for {
 sub as_string {
     my $self = shift;
 
-    my $mn = max(map { $_->{name} ? length($_->{name}) : 0 } @{$self->{patterns}});
-    my $nn = max(map { $_->{method} ? length(join(",",@{$_->{method}})) : 0 } @{$self->{patterns}});
+    my $mn = max(map { $_->{name} ? length($_->{name}) : 0 } @{$self->{routes}});
+    my $nn = max(map { $_->{method} ? length(join(",",@{$_->{method}})) : 0 } @{$self->{routes}});
 
     return join('', map {
         sprintf "%-${mn}s %-${nn}s %s\n", $_->{name}||'', join(',', @{$_->{method} || []}) || '', $_->{pattern}
-    } @{$self->{patterns}}) . "\n";
+    } @{$self->{routes}}) . "\n";
 }
 
 1;
