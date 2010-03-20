@@ -159,6 +159,13 @@ This method returns a plain hashref that would look like:
 
 It returns undef if no valid match is found.
 
+- my ($match, $route) = $router->routematch($env|$path);
+
+Match a URL against against one of the routes contained.
+
+Will return undef if no valid match is found, otherwise a
+result hashref and a [Router::Simple::Route](http://search.cpan.org/search?mode=module&query=Router::Simple::Route) object is returned.
+
 - $router->url_for($anchor, \%opts)
 
 Generates a path string from the rule named `$anchor`.
