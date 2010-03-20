@@ -14,7 +14,11 @@ sub new {
 
 sub connect {
     my $self = shift;
-    push @{ $self->{routes} }, Router::Simple::Route->new(@_);
+    my $route = Router::Simple::Route->new(@_);
+    push @{ $self->{routes} }, $route;
+    if (my $name = $route->name) {
+        $self->{by_name}->{$name} = $route;
+    }
     return $self;
 }
 
@@ -54,19 +58,18 @@ sub routematch {
 sub url_for {
     my ($self, $name, $opts) = @_;
 
-    LOOP:
-    for my $row (@{$self->{routes}}) {
-        if ($row->{name} && $row->{name} eq $name) {
-            my %required = map { $_ => 1 } @{$row->{capture}};
-            my $path = $row->{pattern};
-            while (my ($k, $v) = each %$opts) {
-                delete $required{$k};
-                $path =~ s!\{$k(?:\:.+?)?\}|:$k!$v!g or next LOOP;
-            }
-            if (not %required) {
-                return $path;
-            }
-        }
+    my $route = $self->{by_name}->{$name}
+        or return undef;
+
+    my %required = map { $_ => 1 } @{$route->{capture}};
+    my $path = $route->{pattern};
+    while (my ($k, $v) = each %$opts) {
+        delete $required{$k};
+        $path =~ s!\{$k(?:\:.+?)?\}|:$k!$v!g
+            or return undef;
+    }
+    if (not %required) {
+        return $path;
     }
     return undef;
 }
