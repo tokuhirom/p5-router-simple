@@ -1,5 +1,14 @@
 Revision history for Perl extension Router::Simple
 
+0.05
+
+        [FEATURE ENHANCEMENTS]
+        - added Router::Simple::Route->match($env) method.
+        - added $route->routematch() method.
+
+        [INCOMPATIBLE CHANGES]
+        - remove url_for().
+
 0.04
 
         (no feature changes)
