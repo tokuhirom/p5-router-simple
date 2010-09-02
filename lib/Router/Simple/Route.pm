@@ -48,7 +48,7 @@ sub new {
                 ([^{:*]+)                       # normal string
             !
                 if ($1) {
-                    my ($name, $pattern) = split /:/, $1;
+                    my ($name, $pattern) = split /:/, $1, 2;
                     push @capture, $name;
                     $pattern ? "($pattern)" : "([^/]+)";
                 } elsif ($2) {
