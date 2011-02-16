@@ -188,11 +188,11 @@ Tatsuhiko Miyagawa
 
 Shawn M Moore
 
-L<routes.py|http://routes.groovie.org/>.
+[routes.py](http://routes.groovie.org/).
 
 # SEE ALSO
 
-Router::Simple is inspired by L<routes.py|http://routes.groovie.org/>.
+Router::Simple is inspired by [routes.py](http://routes.groovie.org/).
 
 [Path::Dispatcher](http://search.cpan.org/perldoc?Path::Dispatcher) is similar, but so complex.
 
