@@ -65,6 +65,7 @@ sub new {
         }
     };
     $row->{capture} = \@capture;
+    $row->{dest}  ||= +{};
 
     return bless $row, $class;
 }

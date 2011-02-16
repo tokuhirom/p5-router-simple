@@ -10,6 +10,7 @@ $r->connect('/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}', {controller => 'Blo
 $r->connect('/comment', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'});
 $r->connect('/', {controller => 'Root', 'action' => 'show_sub'}, {method => 'GET', host => 'sub.localhost'});
 $r->connect(qr{^/belongs/([a-z]+)/([a-z]+)$}, {controller => 'May', action => 'show'});
+$r->connect('/:controller/:action');
 
 is_deeply(
     $r->match( +{ REQUEST_METHOD => 'GET', PATH_INFO => '/', HTTP_HOST => 'localhost'} ),
@@ -61,6 +62,13 @@ is_deeply(
         controller => 'May',
         action     => 'show',
         splat      => ['to', 'us'],
+    }
+);
+is_deeply(
+    $r->match( +{ PATH_INFO => '/foo/bar', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
+    {
+        controller => 'foo',
+        action     => 'bar',
     }
 );
 
