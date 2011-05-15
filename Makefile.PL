@@ -7,10 +7,7 @@ requires 'List::Util'; # was first released with perl 5.007003
 requires 'Class::Accessor::Fast';
 requires 'Test::More' => 0.88; # done_testing
 
-readme_markdown_from('lib/Router/Simple.pm');
 tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';
 test_requires 'Test::More';
-test_requires 'YAML';
 author_tests('xt');
-auto_include;
 WriteAll;
