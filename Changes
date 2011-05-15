@@ -1,5 +1,9 @@
 Revision history for Perl extension Router::Simple
 
+0.09
+
+        - modernize package(no feature changes)
+
 0.08
 
         - fix "Can't use an undefined value as a HASH reference" error for $route->{dest}
