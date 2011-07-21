@@ -83,7 +83,7 @@ sub match {
             return undef;
         }
     }
-    if (my @captured = ($env->{PATH_INFO} =~ $self->{pattern_re})) {
+    if (my @captured = (($env->{PATH_INFO} || '/') =~ $self->{pattern_re})) {
         my %args;
         my @splat;
         if ($self->{_regexp_capture}) {
