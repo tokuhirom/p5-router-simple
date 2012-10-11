@@ -64,7 +64,7 @@ Please read the following example code.
 
 =head2 How to switch from HTTPx::Dispatcher?
 
-L<HTTPx::Dispatcher> is class specific declararative router.
+L<HTTPx::Dispatcher> is class specific declarative router.
 
     package MyApp::Dispatcher;
     use HTTPx::Dspatcher;
