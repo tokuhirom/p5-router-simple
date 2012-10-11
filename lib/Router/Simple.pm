@@ -2,7 +2,7 @@ package Router::Simple;
 use strict;
 use warnings;
 use 5.00800;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 use Router::Simple::SubMapper;
 use Router::Simple::Route;
 use List::Util qw/max/;
@@ -269,7 +269,7 @@ Example output:
 
 =head1 AUTHOR
 
-Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF GMAIL COME<gt>
+Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF@ GMAIL COME<gt>
 
 =head1 THANKS TO
 

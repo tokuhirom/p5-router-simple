@@ -1,5 +1,10 @@
 Revision history for Perl extension Router::Simple
 
+0.10
+
+        - handle empty PATH_INFO as root
+          (tokuhirom)
+
 0.09
 
         - modernize package(no feature changes)
