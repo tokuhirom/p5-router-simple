@@ -20,6 +20,14 @@ is_deeply(
     }
 );
 is_deeply(
+    $r->match( +{ REQUEST_METHOD => 'GET', PATH_INFO => '', HTTP_HOST => 'localhost'} ),
+    {
+        controller => 'Root',
+        action     => 'show',
+    },
+    'empty PATH_INFO is same as "/"'
+);
+is_deeply(
     $r->match( +{ PATH_INFO => '/blog/2010/03', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } ) || undef,
     {
         controller => 'Blog',

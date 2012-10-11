@@ -32,7 +32,17 @@ sub submapper {
 sub _match {
     my ($self, $env) = @_;
 
-    $env = +{ PATH_INFO => $env } unless ref $env;
+    if (ref $env) {
+        # "I think there was a discussion about that a while ago and it is up to apps to deal with empty PATH_INFO as root / iirc"
+        # -- by @miyagawa
+        #
+        # see http://blog.64p.org/entry/2012/10/05/132354
+        if ($env->{PATH_INFO} eq '') {
+            $env->{PATH_INFO} = '/';
+        }
+    } else {
+        $env = +{ PATH_INFO => $env }
+    }
 
     for my $route (@{$self->{routes}}) {
         my $match = $route->match($env);
