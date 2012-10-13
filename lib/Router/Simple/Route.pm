@@ -2,6 +2,7 @@ package Router::Simple::Route;
 use strict;
 use warnings;
 use parent 'Class::Accessor::Fast';
+use Carp ();
 
 __PACKAGE__->mk_accessors(qw/name dest on_match method host pattern/);
 
@@ -89,6 +90,14 @@ sub match {
         if ($self->{_regexp_capture}) {
             push @splat, @captured;
         } else {
+            if (@{$self->{capture}} > 0 && scalar(@{$self->{capture}}) != scalar(@captured)) {
+                # Should not contain parenthesis in regexp pattern
+                #
+                # Good: "/{date:(?:\d+)}"
+                # Bad:  "/{date:(\d+)}"
+                Carp::croak("Path pattern should not contain paren.: " . $self->{pattern});
+            }
+
             for my $i (0..@{$self->{capture}}-1) {
                 if ($self->{capture}->[$i] eq '__splat__') {
                     push @splat, $captured[$i];
