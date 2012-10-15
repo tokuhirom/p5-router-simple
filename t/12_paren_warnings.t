@@ -13,9 +13,9 @@ $r->connect('/', {controller => 'Root', 'action' => 'show_sub'}, {method => 'GET
 $r->connect(qr{^/belongs/([a-z]+)/([a-z]+)$}, {controller => 'May', action => 'show'});
 $r->connect('/:controller/:action');
 
-eval {
-    $r->match( +{ PATH_INFO => '/regexp/2010/03/04', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } )
-};
-like($@, qr/pattern/);
+my $warn;
+local $SIG{__WARN__} = sub { $warn = shift @_; };
+$r->match( +{ PATH_INFO => '/regexp/2010/03/04', HTTP_HOST => 'localhost', REQUEST_METHOD => 'GET' } );
+like($warn, qr/pattern/);
 
 done_testing;

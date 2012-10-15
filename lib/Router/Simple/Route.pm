@@ -95,7 +95,7 @@ sub match {
                 #
                 # Good: "/{date:(?:\d+)}"
                 # Bad:  "/{date:(\d+)}"
-                Carp::croak("Path pattern should not contain paren.: " . $self->{pattern});
+                Carp::carp("Path pattern should not contain paren. This code may not works in future version of Router::Simple. : " . $self->{pattern});
             }
 
             for my $i (0..@{$self->{capture}}-1) {
