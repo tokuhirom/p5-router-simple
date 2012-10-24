@@ -1,5 +1,17 @@
 Revision history for Perl extension Router::Simple
 
+0.11
+
+        - Added warnings when regexp contains parens.
+          i.e. following code does not works.
+          /{year:(\d+)}/{month:(\d+)}{day:(\d+)}
+
+          Q. Why don't you croak?
+          A. I don't want to break existed code.
+             But I may change this feature in future version.
+
+          (reported by ktat++)
+
 0.10
 
         - handle empty PATH_INFO as root

@@ -32,7 +32,7 @@ perltidy.ERR$
 ^MYMETA\.
 \b_build
 ^MANIFEST\.SKIP
-\b\.gitignore
+(\b|\A)\.gitignore
 \.bak$
 ^inc/
 ^Router-Simple-
