@@ -1,5 +1,10 @@
 Revision history for Perl extension Router::Simple
 
+0.12
+
+        - minor pod fix
+          (book++)
+
 0.11
 
         - Added warnings when regexp contains parens.
