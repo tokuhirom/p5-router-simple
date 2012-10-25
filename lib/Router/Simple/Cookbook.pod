@@ -67,7 +67,7 @@ Please read the following example code.
 L<HTTPx::Dispatcher> is class specific declarative router.
 
     package MyApp::Dispatcher;
-    use HTTPx::Dspatcher;
+    use HTTPx::Dispatcher;
     connect '/', {controller => 'foo', action => 'bar'};
     1;
 
