@@ -79,11 +79,6 @@ sub match {
             return undef;
         }
     }
-    if ($self->{method_re}) {
-        unless (($env->{REQUEST_METHOD} || '') =~ $self->{method_re}) {
-            return undef;
-        }
-    }
     if (my @captured = ($env->{PATH_INFO} =~ $self->{pattern_re})) {
         my %args;
         my @splat;
@@ -104,6 +99,12 @@ sub match {
                 } else {
                     $args{$self->{capture}->[$i]} = $captured[$i];
                 }
+            }
+        }
+        if ($self->{method_re}) {
+            unless (($env->{REQUEST_METHOD} || '') =~ $self->{method_re}) {
+                $Router::Simple::_METHOD_NOT_ALLOWED = 1;
+                return undef;
             }
         }
         my $match = +{

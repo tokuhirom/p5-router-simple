@@ -8,6 +8,8 @@ use Router::Simple::Route;
 use List::Util qw/max/;
 use Carp ();
 
+our $_METHOD_NOT_ALLOWED;
+
 sub new {
     bless {routes => []}, shift;
 }
@@ -44,11 +46,19 @@ sub _match {
         $env = +{ PATH_INFO => $env }
     }
 
+    local $_METHOD_NOT_ALLOWED;
+    $self->{method_not_allowed} = 0;
     for my $route (@{$self->{routes}}) {
         my $match = $route->match($env);
         return ($match, $route) if $match;
     }
+    $self->{method_not_allowed} = $_METHOD_NOT_ALLOWED;
     return undef; # not matched.
+}
+
+sub method_not_allowed {
+    my $self = shift;
+    $self->{method_not_allowed};
 }
 
 sub match {
@@ -168,6 +178,10 @@ are stored in the special key C<splat>.
 =item my $router = Router::Simple->new();
 
 Creates a new instance of Router::Simple.
+
+=item $router->method_not_allowed() : Boolean
+
+This method returns last C<< $router->match() >> call is rejected by HTTP method or not.
 
 =item $router->connect([$name, ] $pattern, \%destination[, \%options])
 
