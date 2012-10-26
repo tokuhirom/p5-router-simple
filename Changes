@@ -1,5 +1,9 @@
 Revision history for Perl extension Router::Simple
 
+0.13
+
+        - Added ->method_not_allowed()
+
 0.12
 
         - minor pod fix
