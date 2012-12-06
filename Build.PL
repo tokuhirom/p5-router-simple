@@ -14,7 +14,7 @@ my $build = Module::Build->new(
         'Test::More'            => '0.88',
         'List::Util'            => '0',
         'parent'                => '0',
-        'Class::Accessor::Fast' => '0'
+        'Class::Accessor::Lite' => '0.05'
     },
     no_index    => { 'directory' => [ 'inc', 't', 'xt' ] },
     name        => 'Router-Simple',

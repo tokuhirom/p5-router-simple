@@ -1,10 +1,11 @@
 package Router::Simple::Route;
 use strict;
 use warnings;
-use parent 'Class::Accessor::Fast';
 use Carp ();
 
-__PACKAGE__->mk_accessors(qw/name dest on_match method host pattern/);
+use Class::Accessor::Lite 0.05 (
+    rw => [qw(name dest on_match method host pattern)],
+);
 
 sub new {
     my $class = shift;

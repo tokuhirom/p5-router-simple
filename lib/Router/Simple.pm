@@ -8,6 +8,10 @@ use Router::Simple::Route;
 use List::Util qw/max/;
 use Carp ();
 
+use Class::Accessor::Lite 0.05 (
+    ro => [qw(routes)],
+);
+
 our $_METHOD_NOT_ALLOWED;
 
 sub new {
