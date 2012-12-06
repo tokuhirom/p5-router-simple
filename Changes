@@ -1,5 +1,10 @@
 Revision history for Perl extension Router::Simple
 
+0.14
+
+        - added 'routes' acecessor for Router::Simple class.
+          And switch to Class::Accessor::Lite.
+
 0.13
 
         - Added ->method_not_allowed()
