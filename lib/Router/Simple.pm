@@ -266,7 +266,7 @@ It returns undef if no valid match is found.
 
 =item my ($match, $route) = $router->routematch($env|$path);
 
-Match a URL against against one of the routes contained.
+Match a URL against one of the routes contained.
 
 Will return undef if no valid match is found, otherwise a
 result hashref and a L<Router::Simple::Route> object is returned.
