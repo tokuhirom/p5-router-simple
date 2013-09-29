@@ -1,0 +1,80 @@
+{
+   "abstract" : "simple HTTP router",
+   "author" : [
+      "Tokuhiro Matsuno <tokuhirom AAJKLFJEF@ GMAIL COM>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v0.6.7, CPAN::Meta::Converter version 2.132510",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Router-Simple",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "CPAN::Meta" : "0",
+            "CPAN::Meta::Prereqs" : "0",
+            "Module::Build" : "0.38"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion" : "0.10108",
+            "Test::Pod" : "1.41",
+            "Test::Spellunker" : "v0.2.7"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Class::Accessor::Lite" : "0.05",
+            "List::Util" : "0",
+            "Scalar::Util" : "0",
+            "parent" : "0",
+            "perl" : "5.008_001"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.98"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tokuhirom/p5-router-simple/issues"
+      },
+      "homepage" : "https://github.com/tokuhirom/p5-router-simple",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tokuhirom/p5-router-simple.git",
+         "web" : "https://github.com/tokuhirom/p5-router-simple"
+      }
+   },
+   "version" : "0.14",
+   "x_contributors" : [
+      "Shawn M Moore <sartak@gmail.com>",
+      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
+      "nipotan <nipotan@nipotan.org>",
+      "Naoki Tomita <tomita@cpan.org>",
+      "Philippe Bruhat (BooK) <book@cpan.org>",
+      "David Steinbrunner <dsteinbrunner@pobox.com>",
+      "tokuhirom <tokuhirom@gmail.com>"
+   ]
+}

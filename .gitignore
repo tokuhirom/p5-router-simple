@@ -14,8 +14,14 @@ pm_to_blib
 blib/
 META.yml
 MYMETA.*
-META.json
 META.yml
 README
 ^inc/
 Router-Simple-*/
+/Router-Simple-*
+/.build
+/_build_params
+/Build
+!Build/
+!META.json
+!LICENSE
