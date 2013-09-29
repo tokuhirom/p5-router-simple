@@ -41,7 +41,7 @@ it's easy to use with PSGI supporting web frameworks.
     $router->match('/wiki/john');
     # => {controller => 'WikiPage', action => 'show', page => 'john' }
 
-':name' notation matches qr{(\[^/\]+)}.
+':name' notation matches `qr{([^/]+)}`.
 
 ## '\*' notation
 
@@ -50,7 +50,7 @@ it's easy to use with PSGI supporting web frameworks.
     $router->match('/download/path/to/file.xml');
     # => {controller => 'Download', action => 'file', splat => ['path/to/file', 'xml'] }
 
-'\*' notation matches qr{(.+)}. You will get the captured argument as
+'\*' notation matches `qr{(.+)}`. You will get the captured argument as
 an array ref for the special key `splat`.
 
 ## '{year}' notation
@@ -60,7 +60,7 @@ an array ref for the special key `splat`.
     $router->match('/blog/2010');
     # => {controller => 'Blog', action => 'yearly', year => 2010 }
 
-'{year}' notation matches qr{(\[^/\]+)}, and it will be captured.
+'{year}' notation matches `qr{([^/]+)}`, and it will be captured.
 
 ## '{year:\[0-9\]+}' notation
 
@@ -129,7 +129,7 @@ are stored in the special key `splat`.
             );
 
         A function that evaluates the request. Its signature must be `($environ, $match) => bool`. It should return true if the match is
-        successful or false otherwise. The first arg is `$env` which is
+        successful or false otherwise. The first argument is `$env` which is
         either a PSGI environment or a request path, depending on what you
         pass to `match` method; the second is the routing variables that
         would be returned if the match succeeds.
@@ -138,7 +138,7 @@ are stored in the special key `splat`.
         `$match` in place to affect which variables are returned. This allows
         a wide range of transformations.
 
-- $router->submapper($path, \[\\%dest, \[\\%opt\]\])
+- `$router->submapper($path, [\%dest, [\%opt]])`
 
         $router->submapper('/entry/', {controller => 'Entry'})
 
@@ -146,7 +146,7 @@ are stored in the special key `splat`.
 
     The arguments will be passed to `Router::Simple::SubMapper->new(%args)`.
 
-- $match = $router->match($env|$path)
+- `$match = $router->match($env|$path)`
 
     Matches a URL against one of the contained routes.
 
@@ -163,14 +163,14 @@ are stored in the special key `splat`.
 
     It returns undef if no valid match is found.
 
-- my ($match, $route) = $router->routematch($env|$path);
+- `my ($match, $route) = $router->routematch($env|$path);`
 
     Match a URL against one of the routes contained.
 
     Will return undef if no valid match is found, otherwise a
     result hashref and a [Router::Simple::Route](http://search.cpan.org/perldoc?Router::Simple::Route) object is returned.
 
-- $router->as\_string()
+- `$router->as_string()`
 
     Dumps $router as string.
 
@@ -202,9 +202,9 @@ Router::Simple is inspired by [routes.py](http://routes.groovie.org/).
 
 [Path::Router](http://search.cpan.org/perldoc?Path::Router) is heavy. It depends on [Moose](http://search.cpan.org/perldoc?Moose).
 
-[HTTP::Router](http://search.cpan.org/perldoc?HTTP::Router) has many deps. It is not well documented.
+[HTTP::Router](http://search.cpan.org/perldoc?HTTP::Router) has many dependencies. It is not well documented.
 
-[HTTPx::Dispatcher](http://search.cpan.org/perldoc?HTTPx::Dispatcher) is my old one. It does not provide an OOish interface.
+[HTTPx::Dispatcher](http://search.cpan.org/perldoc?HTTPx::Dispatcher) is my old one. It does not provide an OO-ish interface.
 
 # THANKS TO
 

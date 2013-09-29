@@ -28,6 +28,8 @@ BEGIN {
 1;
 __END__
 
+=for stopwords submapper
+
 =head1 NAME
 
 Router::Simple::Declare - declarative interface for Router::Simple

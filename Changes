@@ -2,6 +2,13 @@ Revision history for Perl extension Router::Simple
 
 {{$NEXT}}
 
+0.15 2013-09-29T02:29:15Z
+
+    - minil migrate.
+      (tokuhirom)
+    - typo fix
+      (David Steinbrunner)
+
 0.14
 
         - added 'routes' acecessor for Router::Simple class.

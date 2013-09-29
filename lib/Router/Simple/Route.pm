@@ -125,6 +125,8 @@ sub match {
 1;
 __END__
 
+=for stopwords dest
+
 =head1 NAME
 
 Router::Simple::Route - route object

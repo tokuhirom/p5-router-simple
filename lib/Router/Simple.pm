@@ -2,7 +2,7 @@ package Router::Simple;
 use strict;
 use warnings;
 use 5.00800;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 use Router::Simple::SubMapper;
 use Router::Simple::Route;
 use List::Util qw/max/;
@@ -90,6 +90,8 @@ sub as_string {
 1;
 __END__
 
+=for stopwords DeNA
+
 =encoding utf8
 
 =head1 NAME
@@ -135,7 +137,7 @@ it's easy to use with PSGI supporting web frameworks.
     $router->match('/wiki/john');
     # => {controller => 'WikiPage', action => 'show', page => 'john' }
 
-':name' notation matches qr{([^/]+)}.
+':name' notation matches C<qr{([^/]+)}>.
 
 =head2 '*' notation
 
@@ -144,7 +146,7 @@ it's easy to use with PSGI supporting web frameworks.
     $router->match('/download/path/to/file.xml');
     # => {controller => 'Download', action => 'file', splat => ['path/to/file', 'xml'] }
 
-'*' notation matches qr{(.+)}. You will get the captured argument as
+'*' notation matches C<qr{(.+)}>. You will get the captured argument as
 an array ref for the special key C<splat>.
 
 =head2 '{year}' notation
@@ -154,7 +156,7 @@ an array ref for the special key C<splat>.
     $router->match('/blog/2010');
     # => {controller => 'Blog', action => 'yearly', year => 2010 }
 
-'{year}' notation matches qr{([^/]+)}, and it will be captured.
+'{year}' notation matches C<qr{([^/]+)}>, and it will be captured.
 
 =head2 '{year:[0-9]+}' notation
 
@@ -228,7 +230,7 @@ version supports 'method', 'host', and 'on_match'.
 
 A function that evaluates the request. Its signature must be C<<
 ($environ, $match) => bool >>. It should return true if the match is
-successful or false otherwise. The first arg is C<$env> which is
+successful or false otherwise. The first argument is C<$env> which is
 either a PSGI environment or a request path, depending on what you
 pass to C<match> method; the second is the routing variables that
 would be returned if the match succeeds.
@@ -239,7 +241,7 @@ a wide range of transformations.
 
 =back
 
-=item $router->submapper($path, [\%dest, [\%opt]])
+=item C<< $router->submapper($path, [\%dest, [\%opt]]) >>
 
     $router->submapper('/entry/', {controller => 'Entry'})
 
@@ -247,7 +249,7 @@ This method is shorthand for creating new instance of L<Router::Simple::Submappe
 
 The arguments will be passed to C<< Router::Simple::SubMapper->new(%args) >>.
 
-=item $match = $router->match($env|$path)
+=item C<< $match = $router->match($env|$path) >>
 
 Matches a URL against one of the contained routes.
 
@@ -264,14 +266,14 @@ This method returns a plain hashref that would look like:
 
 It returns undef if no valid match is found.
 
-=item my ($match, $route) = $router->routematch($env|$path);
+=item C<< my ($match, $route) = $router->routematch($env|$path); >>
 
 Match a URL against one of the routes contained.
 
 Will return undef if no valid match is found, otherwise a
 result hashref and a L<Router::Simple::Route> object is returned.
 
-=item $router->as_string()
+=item C<< $router->as_string() >>
 
 Dumps $router as string.
 
@@ -305,9 +307,9 @@ L<Path::Dispatcher> is similar, but so complex.
 
 L<Path::Router> is heavy. It depends on L<Moose>.
 
-L<HTTP::Router> has many deps. It is not well documented.
+L<HTTP::Router> has many dependencies. It is not well documented.
 
-L<HTTPx::Dispatcher> is my old one. It does not provide an OOish interface.
+L<HTTPx::Dispatcher> is my old one. It does not provide an OO-ish interface.
 
 =head1 THANKS TO
 

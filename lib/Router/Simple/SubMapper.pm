@@ -28,6 +28,8 @@ sub connect {
 1;
 __END__
 
+=for stopwords submapper
+
 =head1 NAME
 
 Router::Simple::SubMapper - submapper
