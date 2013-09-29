@@ -19,6 +19,11 @@ my $build = Module::Build->new(
     no_index    => { 'directory' => [ 'inc', 't', 'xt' ] },
     name        => 'Router-Simple',
     module_name => 'Router::Simple',
+    meta_merge => {
+        resources => {
+            repository => 'https://github.com/tokuhirom/p5-router-simple'
+        }
+    },
 
     test_files => ( -d '.git' || $ENV{RELEASE_TESTING} ) ? 't/ xt/' : 't/',
 
