@@ -1,4 +1,4 @@
-Revision history for Perl extension Router::Simple
+Revision history for Perl module Router::Simple
 
 {{$NEXT}}
 
@@ -9,82 +9,86 @@ Revision history for Perl extension Router::Simple
     - typo fix
       (David Steinbrunner)
 
-0.14
+0.14 2012-12-05
 
-        - added 'routes' acecessor for Router::Simple class.
-          And switch to Class::Accessor::Lite.
+    - added 'routes' acecessor for Router::Simple class.
+      And switch to Class::Accessor::Lite.
 
-0.13
+0.13 2012-10-26
 
-        - Added ->method_not_allowed()
+    - Added ->method_not_allowed()
 
-0.12
+0.12 2012-10-25
 
-        - minor pod fix
-          (book++)
+    - minor pod fix
+      (book++)
 
-0.11
+0.11 2012-10-23
 
-        - Added warnings when regexp contains parens.
-          i.e. following code does not works.
-          /{year:(\d+)}/{month:(\d+)}{day:(\d+)}
+    - Added warnings when regexp contains parens.
+      i.e. following code does not works.
+      /{year:(\d+)}/{month:(\d+)}{day:(\d+)}
 
-          Q. Why don't you croak?
-          A. I don't want to break existed code.
-             But I may change this feature in future version.
+    Q. Why don't you croak?
+    A. I don't want to break existed code.
+       But I may change this feature in future version.
 
-          (reported by ktat++)
+       (reported by ktat++)
 
-0.10
+0.10 2012-10-10
 
-        - handle empty PATH_INFO as root
-          (tokuhirom)
+    - handle empty PATH_INFO as root
+      (tokuhirom)
 
-0.09
+0.09 2011-05-14
 
-        - modernize package(no feature changes)
+    - modernize package (no feature changes)
 
-0.08
+0.08 2011-02-16
 
-        - fix "Can't use an undefined value as a HASH reference" error for $route->{dest}
-          (tomi-ru++)
+    - fix "Can't use an undefined value as a HASH reference" error
+      for $route->{dest}
+      (tomi-ru++)
 
-0.07
+0.07 2010-09-02
 
-        - modified to allow to use extended regexp (?:including ":" - colon) as pattern
-          (nipotan)
+    - modified to allow to use extended regexp (?:including ":" - colon)
+      as pattern
+      (nipotan)
 
-0.06
+0.06 2010-06-14
 
-        - require Test::More 0.88 or later for using done_testing.
-          (reported by kazeburo++)
+    - require Test::More 0.88 or later for using done_testing.
+      (reported by kazeburo++)
 
-0.05
+0.05 2010-03-21
 
-        [FEATURE ENHANCEMENTS]
-        - added Router::Simple::Route->match($env) method.
-        - added $route->routematch() method.
+    [FEATURE ENHANCEMENTS]
+    - added Router::Simple::Route->match($env) method.
+    - added $route->routematch() method.
 
-        [INCOMPATIBLE CHANGES]
-        - remove url_for().
+    [INCOMPATIBLE CHANGES]
+    - remove url_for().
 
-0.04
+0.04 2010-03-20
 
-        (no feature changes)
-        - some doc fixed(miyagawa++)
-        - added test case(miyagawa++)
+    (no feature changes)
+    - some doc fixed(miyagawa++)
+    - added test case(miyagawa++)
 
-0.03
+0.03 2010-03-19
 
-        [INCOMPATIBLE CHANGES]
-        - make 'submapper' as more consistent.
-        - ->match() returns flat hashref(suggested by miyagawa++)
-        - added 'on_match' callback function(suggested by miyagawa++)
-        - ->connect() does not treat any keys in $destination.
+    [INCOMPATIBLE CHANGES]
+    - make 'submapper' as more consistent.
+    - ->match() returns flat hashref(suggested by miyagawa++)
+    - added 'on_match' callback function(suggested by miyagawa++)
+    - ->connect() does not treat any keys in $destination.
 
-0.02
+0.02 2010-03-19
 
-        - fixed english docs(Sartak++)
+    - fixed english docs(Sartak++)
 
-0.01    Wed Mar 17 08:36:14 2010
-        - original version
+0.01 2010-03-19
+
+    - original version
+
