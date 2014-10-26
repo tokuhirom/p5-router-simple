@@ -3,7 +3,7 @@ use warnings;
 use Router::Simple;
 use Test::More;
 
-my $r = Router::Simple->new();
+my $r = Router::Simple->new({ directory_slash => 1 });
 $r->connect('blog_monthly', '/blog/{year}/{month}/', {controller => 'Blog', action => 'monthly'}, {method => 'GET'});
 $r->connect('/blog/{year:\d{1,4}}/{month:\d{2}}/{day:\d\d}/', {controller => 'Blog', action => 'daily'}, {method => 'GET'});
 $r->connect('/comment/', {controller => 'Comment', 'action' => 'create'}, {method => 'POST'});

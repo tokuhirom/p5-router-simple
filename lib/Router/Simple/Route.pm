@@ -64,7 +64,7 @@ sub new {
                 }
             !gex;
             # for example, pattern '/comment/' will both match '/comment/' and '/comment'
-            $pattern .= '?' if $pattern =~ m{\/$};
+            $pattern .= '?' if $opt->{directory_slash} and $pattern =~ m{\/$};
             qr{^$pattern$};
         }
     };
