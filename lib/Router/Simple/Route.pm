@@ -63,6 +63,8 @@ sub new {
                     quotemeta($4);
                 }
             !gex;
+            # for example, pattern '/comment/' will both match '/comment/' and '/comment'
+            $pattern .= '?' if $pattern =~ m{\/$};
             qr{^$pattern$};
         }
     };
