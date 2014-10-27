@@ -9,17 +9,26 @@ use List::Util qw/max/;
 use Carp ();
 
 use Class::Accessor::Lite 0.05 (
-    ro => [qw(routes)],
+    new => 1,
+    ro => [qw(routes directory_slash)],
 );
 
 our $_METHOD_NOT_ALLOWED;
 
-sub new {
-    bless {routes => []}, shift;
-}
-
 sub connect {
     my $self = shift;
+
+    if ($self->{directory_slash}) {
+        # connect([$name, ]$pattern[, \%dest[, \%opt]])
+        if (@_ == 1 || ref $_[1]) {
+            unshift(@_, undef);
+        }
+
+        # \%opt
+        $_[3] ||= {};
+        $_[3]->{directory_slash} = 1;
+    }
+
     my $route = Router::Simple::Route->new(@_);
     push @{ $self->{routes} }, $route;
     return $self;
@@ -126,7 +135,7 @@ it's easy to use with PSGI supporting web frameworks.
 
 =head1 HOW TO WRITE A ROUTING RULE
 
-=head2 plain string 
+=head2 plain string
 
     $router->connect( '/foo', { controller => 'Root', action => 'foo' } );
 
