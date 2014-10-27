@@ -4,7 +4,7 @@
       "Tokuhiro Matsuno <tokuhirom AAJKLFJEF@ GMAIL COM>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.6.7, CPAN::Meta::Converter version 2.132510",
+   "generated_by" : "Minilla/v2.2.0, CPAN::Meta::Converter version 2.141520",
    "license" : [
       "perl_5"
    ],
@@ -21,21 +21,21 @@
          "share",
          "eg",
          "examples",
-         "author"
+         "author",
+         "builder"
       ]
    },
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "CPAN::Meta" : "0",
-            "CPAN::Meta::Prereqs" : "0",
             "Module::Build" : "0.38"
          }
       },
       "develop" : {
          "requires" : {
             "Test::CPAN::Meta" : "0",
-            "Test::MinimumVersion" : "0.10108",
+            "Test::MinimumVersion::Fast" : "0.04",
+            "Test::PAUSE::Permissions" : "0.04",
             "Test::Pod" : "1.41",
             "Test::Spellunker" : "v0.2.7"
          }
@@ -67,7 +67,7 @@
          "web" : "https://github.com/tokuhirom/p5-router-simple"
       }
    },
-   "version" : "0.15",
+   "version" : "0.16",
    "x_contributors" : [
       "Shawn M Moore <sartak@gmail.com>",
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
@@ -75,6 +75,8 @@
       "Naoki Tomita <tomita@cpan.org>",
       "Philippe Bruhat (BooK) <book@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
-      "tokuhirom <tokuhirom@gmail.com>"
+      "Neil Bowers <neil@bowers.com>",
+      "Fayland Lam <fayland@gmail.com>",
+      "Tokuhiro Matsuno <tokuhirom@gmail.com>"
    ]
 }

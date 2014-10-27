@@ -2,6 +2,21 @@ Revision history for Perl module Router::Simple
 
 {{$NEXT}}
 
+0.16 2014-10-27T01:39:47Z
+
+    commit 4cce76f681517d9ae10d2509899bf0e9abd4db5d
+    commit 47ca5b5141b2ae863b62989755e5f3a17edf37df
+    Author: Fayland Lam <fayland@gmail.com>
+    Date:   Sun Oct 26 17:44:51 2014 +0800
+
+        Added directory_slash option.
+
+    commit 379502c868db3bd37c3518e288d64223d4012417
+    Author: Neil Bowers <neil@bowers.com>
+    Date:   Wed Oct 2 23:35:04 2013 +0100
+
+        Reformatted as per CPAN::Changes::Spec
+
 0.15 2013-09-29T02:29:15Z
 
     - minil migrate.

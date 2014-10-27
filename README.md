@@ -30,7 +30,7 @@ it's easy to use with PSGI supporting web frameworks.
 
 # HOW TO WRITE A ROUTING RULE
 
-## plain string 
+## plain string
 
     $router->connect( '/foo', { controller => 'Root', action => 'foo' } );
 
@@ -108,11 +108,11 @@ are stored in the special key `splat`.
 
     - method
 
-        'method' is an ArrayRef\[String\] or String that matches __REQUEST\_METHOD__ in $req.
+        'method' is an ArrayRef\[String\] or String that matches **REQUEST\_METHOD** in $req.
 
     - host
 
-        'host' is a String or Regexp that matches __HTTP\_HOST__ in $req.
+        'host' is a String or Regexp that matches **HTTP\_HOST** in $req.
 
     - on\_match
 
@@ -142,7 +142,7 @@ are stored in the special key `splat`.
 
         $router->submapper('/entry/', {controller => 'Entry'})
 
-    This method is shorthand for creating new instance of [Router::Simple::Submapper](http://search.cpan.org/perldoc?Router::Simple::Submapper).
+    This method is shorthand for creating new instance of [Router::Simple::Submapper](https://metacpan.org/pod/Router::Simple::Submapper).
 
     The arguments will be passed to `Router::Simple::SubMapper->new(%args)`.
 
@@ -150,7 +150,7 @@ are stored in the special key `splat`.
 
     Matches a URL against one of the contained routes.
 
-    The parameter is either a [PSGI](http://search.cpan.org/perldoc?PSGI) $env or a plain string that
+    The parameter is either a [PSGI](https://metacpan.org/pod/PSGI) $env or a plain string that
     represents a path.
 
     This method returns a plain hashref that would look like:
@@ -168,7 +168,7 @@ are stored in the special key `splat`.
     Match a URL against one of the routes contained.
 
     Will return undef if no valid match is found, otherwise a
-    result hashref and a [Router::Simple::Route](http://search.cpan.org/perldoc?Router::Simple::Route) object is returned.
+    result hashref and a [Router::Simple::Route](https://metacpan.org/pod/Router::Simple::Route) object is returned.
 
 - `$router->as_string()`
 
@@ -198,13 +198,13 @@ Shawn M Moore
 
 Router::Simple is inspired by [routes.py](http://routes.groovie.org/).
 
-[Path::Dispatcher](http://search.cpan.org/perldoc?Path::Dispatcher) is similar, but so complex.
+[Path::Dispatcher](https://metacpan.org/pod/Path::Dispatcher) is similar, but so complex.
 
-[Path::Router](http://search.cpan.org/perldoc?Path::Router) is heavy. It depends on [Moose](http://search.cpan.org/perldoc?Moose).
+[Path::Router](https://metacpan.org/pod/Path::Router) is heavy. It depends on [Moose](https://metacpan.org/pod/Moose).
 
-[HTTP::Router](http://search.cpan.org/perldoc?HTTP::Router) has many dependencies. It is not well documented.
+[HTTP::Router](https://metacpan.org/pod/HTTP::Router) has many dependencies. It is not well documented.
 
-[HTTPx::Dispatcher](http://search.cpan.org/perldoc?HTTPx::Dispatcher) is my old one. It does not provide an OO-ish interface.
+[HTTPx::Dispatcher](https://metacpan.org/pod/HTTPx::Dispatcher) is my old one. It does not provide an OO-ish interface.
 
 # THANKS TO
 
