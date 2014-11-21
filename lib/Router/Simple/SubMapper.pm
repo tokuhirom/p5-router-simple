@@ -2,6 +2,7 @@ package Router::Simple::SubMapper;
 use strict;
 use warnings;
 use Scalar::Util qw/weaken/;
+use Router::Simple ();
 
 sub new {
     my ($class, %args) = @_;
@@ -24,6 +25,13 @@ sub connect {
 
     $self; # chained method
 }
+
+sub submapper {
+   my $self = shift;
+
+   Router::Simple::submapper($self, @_);
+}
+
 
 1;
 __END__
