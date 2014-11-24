@@ -26,10 +26,11 @@ sub connect {
     $self; # chained method
 }
 
+# Allow nested submapper calls
 sub submapper {
-   my $self = shift;
+    my $self = shift;
 
-   Router::Simple::submapper($self, @_);
+    Router::Simple::submapper($self, @_);
 }
 
 
@@ -67,6 +68,15 @@ Do not call this method directly.You should create new instance from $router->su
 =item $submapper->connect(@args)
 
 This method creates new route to parent $router with @args and arguments of ->submapper().
+
+This method returns $submapper itself for method-chain.
+
+=back
+
+
+=item $submapper->submapper(%args)
+
+submapper() can be called recursively to build nested routes.
 
 This method returns $submapper itself for method-chain.
 
