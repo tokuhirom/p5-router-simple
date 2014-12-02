@@ -71,9 +71,6 @@ This method creates new route to parent $router with @args and arguments of ->su
 
 This method returns $submapper itself for method-chain.
 
-=back
-
-
 =item $submapper->submapper(%args)
 
 submapper() can be called recursively to build nested routes.

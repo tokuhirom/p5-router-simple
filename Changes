@@ -2,6 +2,14 @@ Revision history for Perl module Router::Simple
 
 {{$NEXT}}
 
+0.17 2014-12-02T06:58:23Z
+
+    commit 35bb954a60cdd9225858b522f118d5851f69e3ce
+    Author: Maurice Aubrey <maurice.aubrey@gmail.com>
+    Date:   Fri Nov 21 15:19:59 2014 -0800
+
+        support nested submappers
+
 0.16 2014-10-27T01:39:47Z
 
     commit 4cce76f681517d9ae10d2509899bf0e9abd4db5d
