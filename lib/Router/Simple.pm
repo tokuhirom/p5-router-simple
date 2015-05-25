@@ -254,7 +254,7 @@ a wide range of transformations.
 
     $router->submapper('/entry/', {controller => 'Entry'})
 
-This method is shorthand for creating new instance of L<Router::Simple::Submapper>.
+This method is shorthand for creating new instance of L<Router::Simple::SubMapper>.
 
 The arguments will be passed to C<< Router::Simple::SubMapper->new(%args) >>.
 
