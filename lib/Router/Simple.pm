@@ -146,7 +146,7 @@ it's easy to use with PSGI supporting web frameworks.
     $router->match('/wiki/john');
     # => {controller => 'WikiPage', action => 'show', page => 'john' }
 
-':name' notation matches C<qr{([^/]+)}>.
+':name' notation matches C<qr{([^/]+)}>, and it will be captured.
 
 =head2 '*' notation
 
@@ -165,7 +165,8 @@ an array ref for the special key C<splat>.
     $router->match('/blog/2010');
     # => {controller => 'Blog', action => 'yearly', year => 2010 }
 
-'{year}' notation matches C<qr{([^/]+)}>, and it will be captured.
+'{year}' notation matches C<qr{([^/]+)}>, and it will be captured.  '{year}'
+behaves the same was as ':year'.
 
 =head2 '{year:[0-9]+}' notation
 
@@ -196,7 +197,9 @@ Creates a new instance of Router::Simple.
 
 =item $router->method_not_allowed() : Boolean
 
-This method returns last C<< $router->match() >> call is rejected by HTTP method or not.
+If the last attempt to match with C<< $router->match() >> was rejected because
+the HTTP method was disallowed (as opposed to, say, not matching any routed
+paths) this method returns true.
 
 =item $router->connect([$name, ] $pattern, \%destination[, \%options])
 
@@ -208,9 +211,11 @@ Adds a new rule to $router.
     $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
     $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
+'connect' returns the router object, so 'connect' calls can be chained.
+
 C<\%destination> will be used by I<match> method.
 
-You can specify some optional things to C<\%options>. The current
+You can specify some optional things in C<\%options>. The current
 version supports 'method', 'host', and 'on_match'.
 
 =over 4
@@ -242,9 +247,9 @@ A function that evaluates the request. Its signature must be C<<
 successful or false otherwise. The first argument is C<$env> which is
 either a PSGI environment or a request path, depending on what you
 pass to C<match> method; the second is the routing variables that
-would be returned if the match succeeds.
+will be returned if the match succeeds.
 
-The function can modify C<$env> (in case it's a reference) and
+The function can modify C<$env> (if it's a reference) and
 C<$match> in place to affect which variables are returned. This allows
 a wide range of transformations.
 
