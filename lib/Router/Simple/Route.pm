@@ -27,11 +27,11 @@ sub new {
         $row->{method} = $method;
 
         my $method_re = join '|', @{$method};
-        $row->{method_re} = qr{^(?:$method_re)$};
+        $row->{method_re} = qr{^(?:$method_re)\z};
     }
     if (my $host = $opt->{host}) {
         $row->{host} = $host;
-        $row->{host_re} = ref $host ? $host : qr(^\Q$host\E$);
+        $row->{host_re} = ref $host ? $host : qr(^\Q$host\E\z);
     }
 
     $row->{pattern} = $pattern;
@@ -65,7 +65,7 @@ sub new {
             !gex;
             # for example, pattern '/comment/' will both match '/comment/' and '/comment'
             $pattern .= '?' if $opt->{directory_slash} and $pattern =~ m{\/$};
-            qr{^$pattern$};
+            qr{^$pattern\z};
         }
     };
     $row->{capture} = \@capture;
