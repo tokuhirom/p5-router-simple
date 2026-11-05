@@ -4,7 +4,7 @@
       "Tokuhiro Matsuno <tokuhirom AAJKLFJEF@ GMAIL COM>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.1.1, CPAN::Meta::Converter version 2.141520",
+   "generated_by" : "Minilla/v3.3.2",
    "license" : [
       "perl_5"
    ],
@@ -28,14 +28,14 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "Module::Build::Tiny" : "0.035"
          }
       },
       "develop" : {
          "requires" : {
             "Test::CPAN::Meta" : "0",
             "Test::MinimumVersion::Fast" : "0.04",
-            "Test::PAUSE::Permissions" : "0.04",
+            "Test::PAUSE::Permissions" : "0.07",
             "Test::Pod" : "1.41",
             "Test::Spellunker" : "v0.2.7"
          }
@@ -46,7 +46,7 @@
             "List::Util" : "0",
             "Scalar::Util" : "0",
             "parent" : "0",
-            "perl" : "5.008_001"
+            "perl" : "5.010"
          }
       },
       "test" : {
@@ -63,21 +63,26 @@
       "homepage" : "https://github.com/tokuhirom/p5-router-simple",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/tokuhirom/p5-router-simple.git",
+         "url" : "https://github.com/tokuhirom/p5-router-simple.git",
          "web" : "https://github.com/tokuhirom/p5-router-simple"
       }
    },
-   "version" : "0.17",
+   "version" : "0.18",
    "x_contributors" : [
-      "Shawn M Moore <sartak@gmail.com>",
-      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
-      "nipotan <nipotan@nipotan.org>",
-      "Naoki Tomita <tomita@cpan.org>",
-      "Philippe Bruhat (BooK) <book@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
-      "Neil Bowers <neil@bowers.com>",
       "Fayland Lam <fayland@gmail.com>",
       "Maurice Aubrey <maurice.aubrey@gmail.com>",
-      "Tokuhiro Matsuno <tokuhirom@gmail.com>"
-   ]
+      "Naoki Tomita <tomita@cpan.org>",
+      "Neil Bowers <neil@bowers.com>",
+      "Philippe Bruhat (BooK) <book@cpan.org>",
+      "Ricardo Signes <rjbs@cpan.org>",
+      "Shawn M Moore <sartak@gmail.com>",
+      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
+      "Tokuhiro Matsuno <tokuhirom@gmail.com>",
+      "kga <watrty@gmail.com>",
+      "nipotan <nipotan@nipotan.org>",
+      "polamjag <s@polamjag.info>"
+   ],
+   "x_serialization_backend" : "JSON::PP version 4.16",
+   "x_static_install" : 1
 }

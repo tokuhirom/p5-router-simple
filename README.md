@@ -41,7 +41,7 @@ it's easy to use with PSGI supporting web frameworks.
     $router->match('/wiki/john');
     # => {controller => 'WikiPage', action => 'show', page => 'john' }
 
-':name' notation matches `qr{([^/]+)}`.
+':name' notation matches `qr{([^/]+)}`, and it will be captured.
 
 ## '\*' notation
 
@@ -60,7 +60,8 @@ an array ref for the special key `splat`.
     $router->match('/blog/2010');
     # => {controller => 'Blog', action => 'yearly', year => 2010 }
 
-'{year}' notation matches `qr{([^/]+)}`, and it will be captured.
+'{year}' notation matches `qr{([^/]+)}`, and it will be captured.  '{year}'
+behaves the same was as ':year'.
 
 ## '{year:\[0-9\]+}' notation
 
@@ -89,7 +90,9 @@ are stored in the special key `splat`.
 
 - $router->method\_not\_allowed() : Boolean
 
-    This method returns last `$router->match()` call is rejected by HTTP method or not.
+    If the last attempt to match with `$router->match()` was rejected because
+    the HTTP method was disallowed (as opposed to, say, not matching any routed
+    paths) this method returns true.
 
 - $router->connect(\[$name, \] $pattern, \\%destination\[, \\%options\])
 
@@ -101,9 +104,11 @@ are stored in the special key `splat`.
         $router->connect( '/blog/:id', { controller => 'Blog', action => 'show' } );
         $router->connect( '/comment', { controller => 'Comment', action => 'new_comment' }, {method => 'POST'} );
 
+    'connect' returns the router object, so 'connect' calls can be chained.
+
     `\%destination` will be used by _match_ method.
 
-    You can specify some optional things to `\%options`. The current
+    You can specify some optional things in `\%options`. The current
     version supports 'method', 'host', and 'on\_match'.
 
     - method
@@ -132,9 +137,9 @@ are stored in the special key `splat`.
         successful or false otherwise. The first argument is `$env` which is
         either a PSGI environment or a request path, depending on what you
         pass to `match` method; the second is the routing variables that
-        would be returned if the match succeeds.
+        will be returned if the match succeeds.
 
-        The function can modify `$env` (in case it's a reference) and
+        The function can modify `$env` (if it's a reference) and
         `$match` in place to affect which variables are returned. This allows
         a wide range of transformations.
 
@@ -142,7 +147,7 @@ are stored in the special key `splat`.
 
         $router->submapper('/entry/', {controller => 'Entry'})
 
-    This method is shorthand for creating new instance of [Router::Simple::Submapper](https://metacpan.org/pod/Router::Simple::Submapper).
+    This method is shorthand for creating new instance of [Router::Simple::SubMapper](https://metacpan.org/pod/Router%3A%3ASimple%3A%3ASubMapper).
 
     The arguments will be passed to `Router::Simple::SubMapper->new(%args)`.
 
@@ -168,7 +173,7 @@ are stored in the special key `splat`.
     Match a URL against one of the routes contained.
 
     Will return undef if no valid match is found, otherwise a
-    result hashref and a [Router::Simple::Route](https://metacpan.org/pod/Router::Simple::Route) object is returned.
+    result hashref and a [Router::Simple::Route](https://metacpan.org/pod/Router%3A%3ASimple%3A%3ARoute) object is returned.
 
 - `$router->as_string()`
 
@@ -184,7 +189,7 @@ are stored in the special key `splat`.
 
 # AUTHOR
 
-Tokuhiro Matsuno <tokuhirom AAJKLFJEF@ GMAIL COM>
+Tokuhiro Matsuno &lt;tokuhirom AAJKLFJEF@ GMAIL COM>
 
 # THANKS TO
 
@@ -198,13 +203,13 @@ Shawn M Moore
 
 Router::Simple is inspired by [routes.py](http://routes.groovie.org/).
 
-[Path::Dispatcher](https://metacpan.org/pod/Path::Dispatcher) is similar, but so complex.
+[Path::Dispatcher](https://metacpan.org/pod/Path%3A%3ADispatcher) is similar, but so complex.
 
-[Path::Router](https://metacpan.org/pod/Path::Router) is heavy. It depends on [Moose](https://metacpan.org/pod/Moose).
+[Path::Router](https://metacpan.org/pod/Path%3A%3ARouter) is heavy. It depends on [Moose](https://metacpan.org/pod/Moose).
 
-[HTTP::Router](https://metacpan.org/pod/HTTP::Router) has many dependencies. It is not well documented.
+[HTTP::Router](https://metacpan.org/pod/HTTP%3A%3ARouter) has many dependencies. It is not well documented.
 
-[HTTPx::Dispatcher](https://metacpan.org/pod/HTTPx::Dispatcher) is my old one. It does not provide an OO-ish interface.
+[HTTPx::Dispatcher](https://metacpan.org/pod/HTTPx%3A%3ADispatcher) is my old one. It does not provide an OO-ish interface.
 
 # THANKS TO
 
